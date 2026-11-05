@@ -35,6 +35,22 @@ window.showSettingsTab = function(tabName) {
   }
 };
 
+window.showGuideTab = function(tabName) {
+  const tabs = ['quickstart', 'rounds', 'controls', 'editor', 'faq'];
+  let activeTab = tabs.includes(tabName) ? tabName : 'quickstart';
+
+  document.querySelectorAll(".guide-tabs .tab-btn").forEach((btn, idx) => {
+    btn.classList.toggle("active", tabs[idx] === activeTab);
+  });
+
+  tabs.forEach((tab) => {
+    const pane = document.getElementById(`guide-pane-${tab}`);
+    if (pane) {
+      pane.style.display = tab === activeTab ? 'block' : 'none';
+    }
+  });
+};
+
 // Khởi tạo trò chơi
 document.addEventListener("DOMContentLoaded", () => {
   window.game = new OlympiaGame();

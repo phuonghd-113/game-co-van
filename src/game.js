@@ -55,6 +55,7 @@ export class OlympiaGame {
     this.soundToggleBtn = document.getElementById("btn-sound-toggle");
     this.fullscreenBtn = document.getElementById("btn-fullscreen");
     this.leaderboardBtn = document.getElementById("btn-leaderboard");
+    this.guideBtn = document.getElementById("btn-guide");
     this.settingsBtn = document.getElementById("btn-settings");
     this.userProfileBadge = document.getElementById("user-profile-badge");
     this.currentUserNameEl = document.getElementById("current-user-name");
@@ -81,6 +82,7 @@ export class OlympiaGame {
     // Modal
     this.modalLeaderboard = document.getElementById("modal-leaderboard");
     this.modalSettings = document.getElementById("modal-settings");
+    this.modalGuide = document.getElementById("modal-guide");
     this.modalLogin = document.getElementById("modal-login");
     this.loginErrorMsg = document.getElementById("login-error-msg");
     this.toastEl = document.getElementById("toast-notice");
@@ -174,6 +176,19 @@ export class OlympiaGame {
     this.leaderboardBtn.addEventListener("click", () => this.openLeaderboard());
     document.getElementById("btn-close-lb").addEventListener("click", () => this.closeModals());
 
+    // Guide modal
+    if (this.guideBtn) {
+      this.guideBtn.addEventListener("click", () => this.openGuide());
+    }
+    const btnCloseGuide = document.getElementById("btn-close-guide");
+    if (btnCloseGuide) {
+      btnCloseGuide.addEventListener("click", () => this.closeModals());
+    }
+    const btnOpenGuideWelcome = document.getElementById("btn-open-guide-welcome");
+    if (btnOpenGuideWelcome) {
+      btnOpenGuideWelcome.addEventListener("click", () => this.openGuide());
+    }
+
     // Settings modal
     this.settingsBtn.addEventListener("click", () => {
       if (!this.isAuthenticated()) {
@@ -211,10 +226,12 @@ export class OlympiaGame {
     }
 
     // Modal background click
-    [this.modalLeaderboard, this.modalSettings].forEach((modal) => {
-      modal.addEventListener("click", (e) => {
-        if (e.target === modal) this.closeModals();
-      });
+    [this.modalLeaderboard, this.modalSettings, this.modalGuide].forEach((modal) => {
+      if (modal) {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) this.closeModals();
+        });
+      }
     });
 
     if (this.modalLogin) {
@@ -259,6 +276,11 @@ export class OlympiaGame {
           e.preventDefault();
           this.r3RecordBuzz(4);
         }
+      }
+
+      // Phím Esc đóng các modal
+      if (e.key === "Escape") {
+        this.closeModals();
       }
 
       // Phím Space tạm dừng / chạy tiếp đồng hồ
@@ -1408,8 +1430,20 @@ export class OlympiaGame {
   closeModals() {
     this.modalLeaderboard.classList.remove("open");
     this.modalSettings.classList.remove("open");
+    if (this.modalGuide) {
+      this.modalGuide.classList.remove("open");
+    }
     if (this.isAuthenticated() && this.modalLogin) {
       this.modalLogin.classList.remove("open");
+    }
+  }
+
+  openGuide(tab = 'quickstart') {
+    if (typeof window.showGuideTab === 'function') {
+      window.showGuideTab(tab);
+    }
+    if (this.modalGuide) {
+      this.modalGuide.classList.add("open");
     }
   }
 

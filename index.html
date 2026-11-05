@@ -89,6 +89,13 @@
         <button class="btn-icon-round" id="btn-sound-toggle" title="Bật hoặc Tắt âm thanh" aria-label="Âm thanh">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
         </button>
+        <button class="btn-icon-round" id="btn-guide" title="Hướng dẫn sử dụng trò chơi" aria-label="Hướng dẫn sử dụng">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
         <button class="btn-icon-round" id="btn-leaderboard" title="Bảng xếp hạng 4 đội" aria-label="Bảng xếp hạng">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1 .45-1 1v1h10v-1c0-.55-.45-1-1-1h-1c-.55 0-1-.45-1-1v-2.34"></path><path d="M6 4h12v7a6 6 0 0 1-12 0V4z"></path></svg>
         </button>
@@ -189,10 +196,13 @@
               </div>
             </div>
 
-            <!-- Nút Bắt đầu trận đấu & Cài đặt chuyên sâu -->
+            <!-- Nút Bắt đầu trận đấu, Hướng dẫn & Cài đặt chuyên sâu -->
             <div class="pregame-actions-bar">
               <button class="btn-olympia-start" id="btn-start-game">
                 <span>BẮT ĐẦU TRẬN ĐẤU</span>
+              </button>
+              <button type="button" class="btn-action btn-next" id="btn-open-guide-welcome">
+                📖 Hướng dẫn sử dụng
               </button>
               <button type="button" class="btn-action btn-reveal" onclick="window.game.openSettings('event')">
                 Quản lý Sự kiện & Ngân hàng đề
@@ -772,6 +782,461 @@
           <button class="btn-action btn-reveal" onclick="window.game.closeModals()">Đóng</button>
           <button class="btn-action btn-correct" onclick="window.game.saveSettings()">Lưu Cài Đặt</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: SỔ TAY HƯỚNG DẪN SỬ DỤNG DÀNH CHO GIÁO VIÊN & QUẢN TRÒ
+       ====================================================================== -->
+  <div class="modal-overlay" id="modal-guide" data-ui>
+    <div class="modal-content modal-guide-content">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          SỔ TAY HƯỚNG DẪN SỬ DỤNG TRƯỜNG QUAY OLYMPIA
+        </h3>
+        <button class="btn-close-modal" id="btn-close-guide" aria-label="Đóng hướng dẫn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Tabs điều hướng hướng dẫn -->
+        <div class="guide-tabs">
+          <button type="button" class="tab-btn active" onclick="window.showGuideTab('quickstart')">
+            🚀 1. Bắt Đầu Nhanh
+          </button>
+          <button type="button" class="tab-btn" onclick="window.showGuideTab('rounds')">
+            🏆 2. Luật 4 Vòng Thi
+          </button>
+          <button type="button" class="tab-btn" onclick="window.showGuideTab('controls')">
+            🛠️ 3. Thao Tác Quản Trò
+          </button>
+          <button type="button" class="tab-btn" onclick="window.showGuideTab('editor')">
+            📝 4. Soạn Đề & Đám Mây
+          </button>
+          <button type="button" class="tab-btn" onclick="window.showGuideTab('faq')">
+            💡 5. Phím Tắt & Mẹo Hay
+          </button>
+        </div>
+
+        <!-- TAB 1: BẮT ĐẦU NHANH -->
+        <div id="guide-pane-quickstart">
+          <div class="guide-hero-banner">
+            <div class="guide-hero-badge">QUY TRÌNH 3 BƯỚC KHỞI ĐỘNG TRẬN ĐẤU</div>
+            <h4 class="guide-hero-title">Sẵn sàng đưa trường quay truyền hình vào lớp học trong 1 phút!</h4>
+            <p class="guide-hero-desc">
+              Trò chơi được thiết kế chuẩn mực theo phong cách Đường Lên Đỉnh Olympia, tối ưu hóa cho máy chiếu lớp học với giao diện sắc nét, âm thanh sống động (Web Audio API 100% offline) và bảng điều khiển trực quan dành cho thầy cô.
+            </p>
+          </div>
+
+          <div class="guide-steps-grid">
+            <div class="guide-step-card">
+              <div class="guide-step-num">01</div>
+              <h5 class="guide-step-title">Chọn Sự Kiện & Bộ Đề</h5>
+              <p class="guide-step-desc">
+                Tại Bàn điều hành ở màn hình Trang Chủ, chọn một Sự kiện có sẵn hoặc bấm <strong>+ Tạo mới</strong> để đặt tên giải đấu. Chọn Bộ đề thi tương ứng với môn học (Toán, Tiếng Việt, Khoa học, Tổng hợp...).
+              </p>
+              <div class="guide-step-tip">
+                <span class="tip-tag">GỢI Ý</span> Thầy cô có thể bấm <strong>"Soạn đề"</strong> để kiểm tra hoặc thêm câu hỏi mới trước khi bắt đầu.
+              </div>
+            </div>
+
+            <div class="guide-step-card">
+              <div class="guide-step-num">02</div>
+              <h5 class="guide-step-title">Đổi Tên 4 Đội Thi Đấu</h5>
+              <p class="guide-step-desc">
+                Nhập tên đại diện của 4 đội trực tiếp vào 4 ô màu: <strong>Đỏ (Đội 1)</strong>, <strong>Xanh biển (Đội 2)</strong>, <strong>Vàng (Đội 3)</strong>, <strong>Xanh lá (Đội 4)</strong>. Có thể đặt theo tên Tổ 1-4 hoặc tên học sinh.
+              </p>
+              <div class="guide-step-tip">
+                <span class="tip-tag">TIỆN LỢI</span> Tên đội sẽ tự động cập nhật ngay lập tức xuống 4 bục thi đấu dưới chân sân khấu.
+              </div>
+            </div>
+
+            <div class="guide-step-card">
+              <div class="guide-step-num">03</div>
+              <h5 class="guide-step-title">Bật Toàn Màn Hình & Bắt Đầu</h5>
+              <p class="guide-step-desc">
+                Nhấn phím <code>F11</code> (hoặc biểu tượng Toàn màn hình góc trên) để chiếu tràn viền tivi/máy chiếu. Bấm nút vàng lớn <strong>BẮT ĐẦU TRẬN ĐẤU</strong> để kích hoạt nhạc mở màn và bước vào Vòng 1!
+              </p>
+              <div class="guide-step-tip">
+                <span class="tip-tag">LƯU Ý</span> Hãy bật loa máy tính trước khi bấm bắt đầu để học sinh được hòa mình vào không khí trường quay.
+              </div>
+            </div>
+          </div>
+
+          <div class="guide-callout-box">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+              <h6>Khả năng chạy Hoàn toàn Offline:</h6>
+              <p>Hệ thống không cần kết nối mạng internet liên tục trong khi chơi. Dữ liệu điểm số và câu hỏi được lưu giữ an toàn trên trình duyệt, không sợ mất điện hoặc mất mạng giữa chừng.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: LUẬT 4 VÒNG THI -->
+        <div id="guide-pane-rounds" style="display:none;">
+          <div class="guide-rounds-wrapper">
+
+            <!-- VÒNG 1 -->
+            <div class="guide-round-card round-border-1">
+              <div class="guide-round-header">
+                <div class="guide-round-title-group">
+                  <span class="guide-round-pill pill-r1">VÒNG 1</span>
+                  <h4 class="guide-round-title">KHỞI ĐỘNG</h4>
+                </div>
+                <div class="guide-round-meta">
+                  <span class="round-meta-tag">⏱ 15 giây/câu</span>
+                  <span class="round-meta-tag tag-score">★ 10 điểm/câu đúng</span>
+                  <span class="round-meta-tag">5 câu / đội</span>
+                </div>
+              </div>
+              <p class="guide-round-summary">Mỗi đội lần lượt bước lên bục thi đấu và trả lời gói 5 câu hỏi nhanh để tích lũy điểm số mở màn.</p>
+              
+              <div class="guide-two-col">
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Quy định thi đấu:</h6>
+                  <ul class="guide-bullets">
+                    <li>Thứ tự thi đấu: Lần lượt từ <strong>Đội 1 &rarr; Đội 2 &rarr; Đội 3 &rarr; Đội 4</strong>.</li>
+                    <li>Trả lời đúng được cộng <strong>+10 điểm</strong>. Trả lời sai không bị trừ điểm.</li>
+                    <li>Hết 15 giây nếu chưa có câu trả lời coi như chưa hoàn thành câu hỏi.</li>
+                  </ul>
+                </div>
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Các bước thao tác Quản trò:</h6>
+                  <ol class="guide-steps-list">
+                    <li>Bấm nút <strong>"BẮT ĐẦU TÍNH GIỜ (15s)"</strong> khi đọc xong câu hỏi.</li>
+                    <li>Học sinh trả lời xong, bấm nút <strong>"HIỆN ĐÁP ÁN"</strong> để hiển thị đáp án trường quay.</li>
+                    <li>Bấm <strong>"✓ ĐÚNG (+10đ)"</strong> nếu học sinh trả lời đúng hoặc <strong>"✗ SAI"</strong> nếu trả lời sai.</li>
+                    <li>Bấm <strong>"CÂU TIẾP THEO ➜"</strong>, khi hết 5 câu bấm <strong>"CHUYỂN SANG ĐỘI KẾ TIẾP"</strong>.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <!-- VÒNG 2 -->
+            <div class="guide-round-card round-border-2">
+              <div class="guide-round-header">
+                <div class="guide-round-title-group">
+                  <span class="guide-round-pill pill-r2">VÒNG 2</span>
+                  <h4 class="guide-round-title">VƯỢT CHƯỚNG NGẠI VẬT</h4>
+                </div>
+                <div class="guide-round-meta">
+                  <span class="round-meta-tag">⏱ 15 giây suy nghĩ</span>
+                  <span class="round-meta-tag tag-score">★ 10đ / Hàng ngang</span>
+                  <span class="round-meta-tag tag-highlight">🎯 40đ / Chướng ngại vật</span>
+                </div>
+              </div>
+              <p class="guide-round-summary">Giải mã 4 từ hàng ngang gợi ý để làm biến mất các mảnh ghép, hé lộ Bức tranh bí mật và Từ khóa Chướng ngại vật trung tâm.</p>
+              
+              <div class="guide-two-col">
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Quy định thi đấu:</h6>
+                  <ul class="guide-bullets">
+                    <li>Có 4 hàng ngang gợi ý và 1 ô trung tâm che khuất bức ảnh bí mật.</li>
+                    <li>Mỗi hàng ngang giải đúng: <strong>+10 điểm</strong> cho đội có đáp án đúng, mở ra các chữ cái và mảnh ghép tương ứng biến mất làm lộ góc ảnh.</li>
+                    <li><strong>🔔 Đoán Từ khóa Chướng ngại vật:</strong> Bất cứ khi nào có đội xin đoán CNV, bấm nút chuông lớn. Đoán đúng nhận ngay <strong>+40 điểm</strong> và kết thúc vòng thi! Đoán sai sẽ bị dừng quyền thi đấu vòng 2.</li>
+                  </ul>
+                </div>
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Các bước thao tác Quản trò:</h6>
+                  <ol class="guide-steps-list">
+                    <li>Click vào <strong>Hàng 1, 2, 3 hoặc 4</strong> để chọn câu hỏi gợi ý.</li>
+                    <li>Bấm <strong>"BẮT ĐẦU TÍNH GIỜ"</strong> &rarr; Bấm <strong>"HIỆN ĐÁP ÁN"</strong>.</li>
+                    <li>Bấm <strong>"✓ CỘNG 10 ĐIỂM"</strong> cho đội có câu trả lời chính xác.</li>
+                    <li>Khi có đội xin đoán CNV: Bấm nút <strong>"BẤM CHUÔNG ĐOÁN TỪ KHÓA (40 điểm)"</strong>. Nếu đúng bấm <strong>"✓ ĐOÁN ĐÚNG (+40Đ)"</strong> để bức tranh hoàn chỉnh mở ra!</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <!-- VÒNG 3 -->
+            <div class="guide-round-card round-border-3">
+              <div class="guide-round-header">
+                <div class="guide-round-title-group">
+                  <span class="guide-round-pill pill-r3">VÒNG 3</span>
+                  <h4 class="guide-round-title">TĂNG TỐC</h4>
+                </div>
+                <div class="guide-round-meta">
+                  <span class="round-meta-tag">⏱ 20 giây / câu</span>
+                  <span class="round-meta-tag tag-score">★ 10 - 20 - 30 - 40 điểm</span>
+                  <span class="round-meta-tag">Cả 4 đội cùng đấu</span>
+                </div>
+              </div>
+              <p class="guide-round-summary">4 câu hỏi tư duy logic với độ khó và điểm số tăng dần qua từng câu: 10đ &rarr; 20đ &rarr; 30đ &rarr; 40đ.</p>
+              
+              <div class="guide-two-col">
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Cơ chế bấm chuông tốc độ:</h6>
+                  <ul class="guide-bullets">
+                    <li>Đội bấm chuông trước sẽ được ưu tiên trả lời trước.</li>
+                    <li>Bấm chuông trực tiếp trên màn hình hoặc nhấn phím số <code>1</code>, <code>2</code>, <code>3</code>, <code>4</code> tương ứng với 4 đội.</li>
+                    <li>Hệ thống tự động ghi nhận thời gian bấm chuông chính xác đến phần trăm giây (miligiây) và xếp hạng tốc độ trực quan.</li>
+                  </ul>
+                </div>
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Các bước thao tác Quản trò:</h6>
+                  <ol class="guide-steps-list">
+                    <li>Đọc câu hỏi và bấm <strong>"BẮT ĐẦU TÍNH GIỜ (20s)"</strong>.</li>
+                    <li>Quan sát bảng <strong>Thứ hạng bấm chuông</strong> tự động hiển thị thời gian phản hồi của từng đội.</li>
+                    <li>Bấm <strong>"HIỆN ĐÁP ÁN"</strong> và chấm điểm cho đội trả lời đúng và nhanh nhất.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <!-- VÒNG 4 -->
+            <div class="guide-round-card round-border-4">
+              <div class="guide-round-header">
+                <div class="guide-round-title-group">
+                  <span class="guide-round-pill pill-r4">VÒNG 4</span>
+                  <h4 class="guide-round-title">VỀ ĐÍCH</h4>
+                </div>
+                <div class="guide-round-meta">
+                  <span class="round-meta-tag">⏱ 20 - 30 giây</span>
+                  <span class="round-meta-tag tag-score">★ Gói 20, 30, 40 điểm</span>
+                  <span class="round-meta-tag tag-star">⭐ Ngôi Sao Hy Vọng x2</span>
+                </div>
+              </div>
+              <p class="guide-round-summary">Vòng thi quyết định thứ hạng Quán quân. Đội thi được tự chọn gói câu hỏi phù hợp với chiến thuật và cơ hội bứt phá với Ngôi sao hy vọng.</p>
+              
+              <div class="guide-two-col">
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Luật Ngôi Sao Hy Vọng & Cướp điểm:</h6>
+                  <ul class="guide-bullets">
+                    <li>Mỗi đội được chọn gói câu hỏi: <strong>Gói 20đ</strong>, <strong>Gói 30đ</strong> hoặc <strong>Gói 40đ</strong> (gồm 3 câu hỏi).</li>
+                    <li><strong>⭐ Ngôi sao hy vọng:</strong> Chọn 1 câu hỏi bất kỳ trong gói để đặt ngôi sao. Đúng: <strong>Nhân đôi điểm (x2)</strong>; Sai: <strong>Bị trừ số điểm của câu hỏi</strong>.</li>
+                    <li><strong>Cướp điểm:</strong> Khi đội chính trả lời sai, hiệu ứng chuông mở ra cho 3 đội còn lại. Đội cướp trả lời đúng được cộng điểm, sai bị trừ 50% số điểm câu.</li>
+                  </ul>
+                </div>
+                <div class="guide-col">
+                  <h6 class="guide-sub-heading">Các bước thao tác Quản trò:</h6>
+                  <ol class="guide-steps-list">
+                    <li>Cho học sinh chọn gói câu hỏi (20đ, 30đ hoặc 40đ).</li>
+                    <li>Hỏi học sinh có đặt <strong>⭐ Ngôi sao hy vọng</strong> không trước khi bấm giờ.</li>
+                    <li>Bấm <strong>"BẮT ĐẦU TÍNH GIỜ"</strong> &rarr; <strong>"HIỆN ĐÁP ÁN"</strong> &rarr; Chấm Đúng / Sai.</li>
+                    <li>Hoàn thành 3 câu, chuyển sang đội thi tiếp theo.</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+
+            <!-- CHUNG KẾT & TRAO GIẢI -->
+            <div class="guide-round-card round-border-5">
+              <div class="guide-round-header">
+                <div class="guide-round-title-group">
+                  <span class="guide-round-pill pill-r5">TỔNG KẾT</span>
+                  <h4 class="guide-round-title">BỤC VINH QUANG & TRAO GIẢI</h4>
+                </div>
+                <div class="guide-round-meta">
+                  <span class="round-meta-tag tag-highlight">👑 Vinh danh Quán quân</span>
+                  <span class="round-meta-tag">🎆 Pháo hoa Canvas rực rỡ</span>
+                </div>
+              </div>
+              <p class="guide-round-summary">Hệ thống tự động sắp xếp 4 đội theo thứ hạng điểm số từ cao đến thấp lên 4 bục vinh quang (1, 2, 3, 4), đội Quán quân nhận Vương miện và Cúp vàng Olympia cùng bài hát khải hoàn vang dội trường quay!</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB 3: THAO TÁC QUẢN TRÒ & ĐIỀU HÀNH -->
+        <div id="guide-pane-controls" style="display:none;">
+          <div class="guide-controls-grid">
+
+            <div class="guide-feature-box">
+              <div class="feature-icon-badge">⚡</div>
+              <h5 class="feature-title">4 Bục Thi Đấu Chân Sân Khấu (Pedestals)</h5>
+              <p class="feature-desc">
+                Luôn hiển thị cố định suốt trận đấu với màu sắc chuẩn mực của 4 đội. Tích hợp màn hình LED điểm số thời gian thực và hiệu ứng hào quang sáng rực khi tới lượt đội thi đấu.
+              </p>
+              <div class="feature-highlight-bar">
+                <strong>Nút +10 và -10 tại bục:</strong> Cho phép thầy cô thưởng điểm khuyến khích, cộng điểm cổ vũ hoặc trừ điểm phạm quy ngay tức khắc mà không cần mở bảng cài đặt.
+              </div>
+            </div>
+
+            <div class="guide-feature-box">
+              <div class="feature-icon-badge">🏆</div>
+              <h5 class="feature-title">Bảng Xếp Hạng Trực Tiếp (Huy Chương Vàng - Bạc - Đồng)</h5>
+              <p class="feature-desc">
+                Bấm vào nút biểu tượng <strong>Chiếc Cúp Vàng</strong> trên thanh tiêu đề bất cứ lúc nào trong giờ học để mở cửa sổ Bảng xếp hạng.
+              </p>
+              <div class="feature-highlight-bar">
+                Bảng xếp hạng tự động sắp xếp theo thứ tự điểm số giảm dần, kèm biểu tượng Huy chương Vàng 🥇, Bạc 🥈, Đồng 🥉 giúp tạo không khí thi đua sôi nổi giữa các tổ.
+              </div>
+            </div>
+
+            <div class="guide-feature-box">
+              <div class="feature-icon-badge">⏸️</div>
+              <h5 class="feature-title">Tạm Dừng & Tiếp Tục Đồng Hồ Đếm Ngược</h5>
+              <p class="feature-desc">
+                Trong quá trình đếm ngược, thầy cô có thể bấm phím <code>Space</code> (phím cách) hoặc nhấp chuột vào vòng tròn đồng hồ để tạm dừng thời gian khi học sinh cần giải thích hoặc khi lớp học cần ổn định trật tự.
+              </p>
+            </div>
+
+            <div class="guide-feature-box">
+              <div class="feature-icon-badge">🧭</div>
+              <h5 class="feature-title">Thanh Điều Hướng Vòng Thi Nhanh (Navbar)</h5>
+              <p class="feature-desc">
+                Thanh chọn vòng ở đầu màn hình (Trang Chủ, 1. Khởi Động, 2. Vượt CNV, 3. Tăng Tốc, 4. Về Đích, 5. Trao Giải) cho phép Quản trò nhảy linh hoạt giữa các vòng mà <strong>không làm mất điểm số</strong> của các đội.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB 4: SOẠN ĐỀ & ĐÁM MÂY -->
+        <div id="guide-pane-editor" style="display:none;">
+          <div class="guide-editor-showcase">
+
+            <div class="guide-card-panel">
+              <h5 class="panel-heading">1. Soạn Câu Hỏi Trực Quan (Question Bank Studio)</h5>
+              <p class="panel-desc">
+                Bấm vào nút <strong>Cài đặt</strong> (bánh răng) &rarr; chọn tab <strong>2. Ngân hàng Đề thi</strong>:
+              </p>
+              <ul class="guide-bullets">
+                <li>Bấm <strong>+ Tạo Bộ đề mới</strong> để tạo ngân hàng đề cho môn học mới (VD: <em>Toán Học Khối 4</em>, <em>Tiếng Việt Khối 5</em>, <em>An Toàn Giao Thông</em>...).</li>
+                <li>Chọn vòng thi cần chỉnh sửa (Khởi động, Vượt CNV, Tăng tốc, Về đích).</li>
+                <li>Gõ trực tiếp nội dung câu hỏi, các đáp án trắc nghiệm A - B - C - D, đáp án đúng và điểm số. Hệ thống sẽ tự động lưu lại tức thì!</li>
+              </ul>
+            </div>
+
+            <div class="guide-card-panel">
+              <h5 class="panel-heading">2. Sao Lưu & Chia Sẻ File JSON Dễ Dàng</h5>
+              <p class="panel-desc">
+                Trong tab <strong>4. Nhập và Xuất File JSON</strong>:
+              </p>
+              <div class="panel-actions-demo">
+                <div class="demo-box">
+                  <span class="demo-badge">TẢI VỀ MÁY</span>
+                  <p>Bấm nút <strong>"Tải file JSON về máy"</strong> để lưu toàn bộ câu hỏi và sự kiện về máy tính dưới dạng file nhẹ (chỉ khoảng 30KB). Rất tiện để chia sẻ cho đồng nghiệp hoặc cất giữ theo từng kỳ thi.</p>
+                </div>
+                <div class="demo-box">
+                  <span class="demo-badge">NẠP TỪ FILE</span>
+                  <p>Bấm <strong>"Mở file từ máy tính"</strong> và chọn file <code>.json</code> đã lưu trước đó để nạp lại đầy đủ bộ đề thi chỉ trong 1 cú nhấp chuột.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="guide-card-panel">
+              <h5 class="panel-heading">3. Đồng Bộ Đám Mây Firebase (Miễn Phí Vĩnh Viễn)</h5>
+              <p class="panel-desc">
+                Tính năng tuyệt vời dành cho thầy cô: <strong>Soạn đề ở nhà &mdash; Lên lớp mở là thấy ngay!</strong>
+              </p>
+              <div class="guide-steps-list-compact">
+                <div class="step-line"><span class="step-badge">1</span> Đăng ký tài khoản miễn phí tại <a href="https://console.firebase.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--blue-brand); font-weight:700; text-decoration:underline;">console.firebase.google.com</a> và tạo 1 dự án (VD: <em>olympia-lop-hoc</em>).</div>
+                <div class="step-line"><span class="step-badge">2</span> Vào mục <strong>Build &rarr; Realtime Database</strong> &rarr; Bấm <strong>Create Database</strong> &rarr; Chọn Start in test mode.</div>
+                <div class="step-line"><span class="step-badge">3</span> Sao chép link Data URL dán vào tab <strong>5. Đồng bộ Firebase Đám mây</strong> trong phần Cài đặt và bấm <strong>Lưu và Đẩy lên Đám mây</strong>.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- TAB 5: PHÍM TẮT & MẸO HAY -->
+        <div id="guide-pane-faq" style="display:none;">
+          <div class="guide-faq-wrapper">
+
+            <div class="guide-table-card">
+              <h5 class="guide-table-title">⌨️ BẢNG TỔNG HỢP PHÍM TẮT BÀN PHÍM</h5>
+              <div class="shortcut-table-wrap">
+                <table class="guide-shortcut-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 25%;">Phím Tắt</th>
+                      <th style="width: 35%;">Chức Năng</th>
+                      <th style="width: 40%;">Áp Dụng Trong Vòng Thi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><kbd class="guide-kbd">F11</kbd></td>
+                      <td>Bật / Thoát toàn màn hình không viền</td>
+                      <td>Toàn bộ các vòng & Màn hình chính</td>
+                    </tr>
+                    <tr>
+                      <td><kbd class="guide-kbd">Space</kbd></td>
+                      <td>Tạm dừng / Chạy tiếp đồng hồ đếm ngược</td>
+                      <td>Vòng 1 (Khởi động), Vòng 3 (Tăng tốc), Vòng 4 (Về đích)</td>
+                    </tr>
+                    <tr>
+                      <td><kbd class="guide-kbd">1</kbd></td>
+                      <td>Đội 1 (Đỏ) bấm chuông giành quyền</td>
+                      <td>Vòng 3: Tăng tốc</td>
+                    </tr>
+                    <tr>
+                      <td><kbd class="guide-kbd">2</kbd></td>
+                      <td>Đội 2 (Xanh biển) bấm chuông giành quyền</td>
+                      <td>Vòng 3: Tăng tốc</td>
+                    </tr>
+                    <tr>
+                      <td><kbd class="guide-kbd">3</kbd></td>
+                      <td>Đội 3 (Vàng) bấm chuông giành quyền</td>
+                      <td>Vòng 3: Tăng tốc</td>
+                    </tr>
+                    <tr>
+                      <td><kbd class="guide-kbd">4</kbd></td>
+                      <td>Đội 4 (Xanh lá) bấm chuông giành quyền</td>
+                      <td>Vòng 3: Tăng tốc</td>
+                    </tr>
+                    <tr>
+                      <td><kbd class="guide-kbd">Esc</kbd></td>
+                      <td>Đóng nhanh cửa sổ Hướng dẫn / Cài đặt</td>
+                      <td>Các cửa sổ Modal pop-up</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="guide-tips-grid">
+              <div class="guide-tip-box">
+                <div class="tip-icon">🔊</div>
+                <div class="tip-details">
+                  <h6>Bật loa trước giờ thi đấu</h6>
+                  <p>Hệ thống sử dụng 100% âm thanh chuẩn Web Audio API lập trình trực tiếp, không load file ngoài nên chạy cực nhanh và không bao giờ lỗi link. Thầy cô chỉ cần bật volume loa máy tính hoặc tivi lớp học là cả lớp sẽ được nghe tiếng tích tắc, chuông reo và nhạc ăn mừng sống động!</p>
+                </div>
+              </div>
+
+              <div class="guide-tip-box">
+                <div class="tip-icon">🖱️</div>
+                <div class="tip-details">
+                  <h6>Sử dụng Chuột bay hoặc Bàn phím không dây</h6>
+                  <p>Thầy cô có thể dùng một con chuột không dây hoặc bút chỉ laser có nút chuột để thoải mái di chuyển dưới lớp học, vừa bao quát học sinh vừa bấm giờ và mở đáp án câu hỏi từ xa.</p>
+                </div>
+              </div>
+
+              <div class="guide-tip-box">
+                <div class="tip-icon">🔔</div>
+                <div class="tip-details">
+                  <h6>Kết hợp Chuông bàn vật lý</h6>
+                  <p>Ở Vòng 2 và Vòng 3, thầy cô có thể đặt trên bàn mỗi đội một chiếc chuông bấm để bàn (loại chuông phục vụ khách sạn hoặc còi bóng đá mini). Khi học sinh đập chuông kêu "Keng", thầy cô nhấn phím số tương ứng trên máy tính để trường quay ghi nhận!</p>
+                </div>
+              </div>
+
+              <div class="guide-tip-box">
+                <div class="tip-icon">🔄</div>
+                <div class="tip-details">
+                  <h6>Khôi phục câu hỏi mẫu bất cứ lúc nào</h6>
+                  <p>Nếu trong lúc soạn đề bị nhầm lẫn, thầy cô chỉ cần vào Cài đặt &rarr; Tab Nhập và Xuất File JSON &rarr; bấm <strong>"Khôi phục dữ liệu mẫu ban đầu"</strong> để hoàn tác về bộ đề chuẩn Olympia phong phú gồm đầy đủ 4 vòng thi.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <div style="display:flex; align-items:center; gap:8px; color:var(--text-dim); font-size:0.85rem;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Mẹo: Nhấn phím <strong>Esc</strong> để đóng cửa sổ hướng dẫn bất kỳ lúc nào.
+        </div>
+        <button class="btn-action btn-correct" onclick="window.game.closeModals()">
+          <span>ĐÃ HIỂU, BẮT ĐẦU CHƠI</span>
+        </button>
       </div>
     </div>
   </div>

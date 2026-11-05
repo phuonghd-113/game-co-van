@@ -2379,6 +2379,547 @@ html, body {
 }
 
 /* ==========================================================================
+   MODAL HƯỚNG DẪN SỬ DỤNG DÀNH CHO GIÁO VIÊN & QUẢN TRÒ (GUIDE MODAL)
+   ========================================================================== */
+.modal-guide-content {
+  max-width: 960px;
+  max-height: 88dvh;
+}
+
+.guide-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid var(--border-subtle);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+}
+
+.guide-hero-banner {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 1.5px solid #bfdbfe;
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+
+.guide-hero-badge {
+  display: inline-block;
+  background: var(--blue-brand);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.guide-hero-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-bottom: 6px;
+}
+
+.guide-hero-desc {
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+/* Steps Grid (Tab 1) */
+.guide-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.guide-step-card {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-step-num {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--blue-brand);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 6px rgba(29, 78, 216, 0.25);
+}
+
+.guide-step-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.guide-step-desc {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+  margin-bottom: 12px;
+  flex: 1;
+}
+
+.guide-step-tip {
+  background: #ffffff;
+  border-left: 3px solid var(--gold-primary);
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--text-sub);
+}
+
+.tip-tag {
+  display: inline-block;
+  background: #fef3c7;
+  color: #b45309;
+  font-weight: 800;
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+
+.guide-callout-box {
+  display: flex;
+  gap: 14px;
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  align-items: flex-start;
+}
+
+.callout-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.callout-content h6 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #92400e;
+  margin-bottom: 4px;
+}
+
+.callout-content p {
+  font-size: 0.86rem;
+  color: #78350f;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Rounds Showcase (Tab 2) */
+.guide-rounds-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guide-round-card {
+  background: #ffffff;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+}
+
+.round-border-1 { border-left: 5px solid var(--team-1); }
+.round-border-2 { border-left: 5px solid var(--team-2); }
+.round-border-3 { border-left: 5px solid var(--team-3); }
+.round-border-4 { border-left: 5px solid #8b5cf6; }
+.round-border-5 { border-left: 5px solid var(--gold-primary); }
+
+.guide-round-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 10px;
+}
+
+.guide-round-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.guide-round-pill {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 12px;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.pill-r1 { background: var(--team-1); }
+.pill-r2 { background: var(--team-2); }
+.pill-r3 { background: var(--team-3); }
+.pill-r4 { background: #8b5cf6; }
+.pill-r5 { background: var(--gold-deep); }
+
+.guide-round-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.guide-round-meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.round-meta-tag {
+  background: #f1f5f9;
+  color: var(--text-sub);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-light);
+}
+
+.round-meta-tag.tag-score {
+  background: #eff6ff;
+  color: var(--blue-brand);
+  border-color: #bfdbfe;
+}
+
+.round-meta-tag.tag-highlight {
+  background: #fef3c7;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.round-meta-tag.tag-star {
+  background: #fdf4ff;
+  color: #9333ea;
+  border-color: #f0abfc;
+}
+
+.guide-round-summary {
+  font-size: 0.9rem;
+  color: var(--text-sub);
+  margin-bottom: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.guide-two-col {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  background: #f8fafc;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  border: 1px solid var(--border-subtle);
+}
+
+.guide-sub-heading {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.guide-bullets {
+  padding-left: 18px;
+  font-size: 0.86rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.guide-bullets li {
+  margin-bottom: 4px;
+}
+
+.guide-steps-list {
+  padding-left: 18px;
+  font-size: 0.86rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.guide-steps-list li {
+  margin-bottom: 4px;
+}
+
+/* Controls Tab (Tab 3) */
+.guide-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.guide-feature-box {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.feature-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #e0f2fe;
+  color: #0284c7;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.feature-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.feature-desc {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+  margin-bottom: 12px;
+  flex: 1;
+}
+
+.feature-highlight-bar {
+  background: #ffffff;
+  border-left: 3px solid var(--blue-brand);
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+}
+
+/* Editor Tab (Tab 4) */
+.guide-editor-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guide-card-panel {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 18px;
+}
+
+.panel-heading {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  margin-bottom: 8px;
+}
+
+.panel-desc {
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+  margin-bottom: 12px;
+}
+
+.panel-actions-demo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.demo-box {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+
+.demo-badge {
+  display: inline-block;
+  background: #dcfce7;
+  color: #15803d;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.demo-box p {
+  font-size: 0.84rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.guide-steps-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.step-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.86rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+}
+
+.step-badge {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--blue-brand);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* FAQ & Shortcuts (Tab 5) */
+.guide-faq-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.guide-table-card {
+  background: #ffffff;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.guide-table-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  padding: 14px 18px;
+  background: #f8fafc;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.shortcut-table-wrap {
+  overflow-x: auto;
+}
+
+.guide-shortcut-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.guide-shortcut-table th {
+  background: #f1f5f9;
+  color: var(--text-sub);
+  font-weight: 700;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.guide-shortcut-table td {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-main);
+}
+
+.guide-kbd {
+  display: inline-block;
+  padding: 3px 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-bottom: 2px solid #94a3b8;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.guide-tips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.guide-tip-box {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.tip-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.tip-details h6 {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.tip-details p {
+  font-size: 0.84rem;
+  color: var(--text-sub);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ==========================================================================
    RESPONSIVE DESIGN FOR CLASSROOM PROJECTORS & SCREENS
    ========================================================================== */
 @media (max-width: 1024px) {
