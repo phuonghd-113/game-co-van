@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đường Lên Đỉnh Olympia - Trò Chơi Giáo Dục Tiểu Học</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- TOÀN BỘ SÂN KHẤU OLYMPIA TRUYỀN HÌNH -->
+  <div class="olympia-stage">
+    
+    <!-- Ánh đèn chùm rọi sân khấu (Moving Spotlights) -->
+    <div class="stage-spotlights">
+      <div class="spotlight spotlight-left-1"></div>
+      <div class="spotlight spotlight-left-2"></div>
+      <div class="spotlight spotlight-right-1"></div>
+      <div class="spotlight spotlight-right-2"></div>
+    </div>
+
+    <!-- Sàn sân khấu phản quang 3D -->
+    <div class="stage-floor"></div>
+
+    <!-- ======================================================================
+         TOP HEADER (TIÊU ĐỀ, THANH ĐIỀU HƯỚNG VÒNG THI & NÚT TIỆN ÍCH)
+         ====================================================================== -->
+    <header class="stage-header">
+      <div class="header-brand">
+        <!-- Vòng nguyệt quế và ngọn đuốc Olympia SVG -->
+        <svg class="brand-laurel-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Olympia">
+          <circle cx="50" cy="50" r="42" stroke="#e5a50a" stroke-width="3" stroke-dasharray="6,4"/>
+          <!-- Vòng nguyệt quế vàng -->
+          <path d="M30 75 C18 60 18 35 34 22 C36 29 33 42 42 48 C42 35 48 26 50 18 C52 26 58 35 58 48 C67 42 64 29 66 22 C82 35 82 60 70 75" fill="none" stroke="#e5a50a" stroke-width="4" stroke-linecap="round"/>
+          <!-- Ngọn đuốc trí tuệ -->
+          <path d="M46 78 L54 78 L52 56 L48 56 Z" fill="#D97706"/>
+          <path d="M50 36 C45 42 45 48 50 54 C55 48 55 42 50 36 Z" fill="#c82333"/>
+          <path d="M50 40 C48 44 48 48 50 51 C52 48 52 44 50 40 Z" fill="#e5a50a"/>
+        </svg>
+
+        <div class="brand-title-wrap">
+          <h1 class="brand-title" id="game-title-text">ĐƯỜNG LÊN ĐỈNH OLYMPIA</h1>
+          <div class="brand-subtitle" id="game-sub-info">
+            <span class="brand-tag">MÔN: KIẾN THỨC TỔNG HỢP</span>
+            <span class="brand-tag">LỚP: TIỂU HỌC</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Thanh chọn nhanh các vòng thi -->
+      <nav class="round-navbar">
+        <button class="round-step-btn active" data-round="0">Trang Chủ</button>
+        <button class="round-step-btn" data-round="1">1. Khởi Động</button>
+        <button class="round-step-btn" data-round="2">2. Vượt CNV</button>
+        <button class="round-step-btn" data-round="3">3. Tăng Tốc</button>
+        <button class="round-step-btn" data-round="4">4. Về Đích</button>
+        <button class="round-step-btn" data-round="5">5. Trao Giải</button>
+      </nav>
+
+      <!-- Các nút chức năng giáo viên với biểu tượng SVG chuẩn -->
+      <div class="header-actions">
+        <!-- Huy hiệu Người dùng / Đăng xuất -->
+        <!-- Đèn báo trạng thái đồng bộ Firebase Đám mây -->
+        <div class="cloud-status-badge" id="cloud-status-badge" title="Trạng thái đồng bộ Đám mây Firebase (Click để cấu hình)" onclick="window.game.openSettings('firebase')">
+          <span class="cloud-status-dot dot-unconfigured" id="cloud-status-dot"></span>
+          <span class="cloud-status-text" id="cloud-status-text">Đám mây</span>
+        </div>
+
+        <div class="user-profile-badge" id="user-profile-badge">
+          <div class="user-badge-icon">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <span class="user-role-label">HOST</span>
+          <span class="user-name-label" id="current-user-name">admin</span>
+          <button class="btn-logout-tiny" id="btn-logout" title="Đăng xuất" aria-label="Đăng xuất" onclick="window.game.logout()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+
+        <button class="btn-icon-round" id="btn-sound-toggle" title="Bật hoặc Tắt âm thanh" aria-label="Âm thanh">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        </button>
+        <button class="btn-icon-round" id="btn-leaderboard" title="Bảng xếp hạng 4 đội" aria-label="Bảng xếp hạng">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H8c-.55 0-1 .45-1 1v1h10v-1c0-.55-.45-1-1-1h-1c-.55 0-1-.45-1-1v-2.34"></path><path d="M6 4h12v7a6 6 0 0 1-12 0V4z"></path></svg>
+        </button>
+        <button class="btn-icon-round" id="btn-settings" title="Cài đặt và Quản lý câu hỏi" aria-label="Cài đặt">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+        <button class="btn-icon-round" id="btn-fullscreen" title="Toàn màn hình trình chiếu" aria-label="Toàn màn hình">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         MAIN ARENA: MÀN HÌNH LED TRƯỜNG QUAY TRUNG TÂM
+         ====================================================================== -->
+    <main class="stage-main-arena">
+      <div class="studio-led-screen">
+
+        <!-- VIEW 0: MÀN HÌNH CHÀO MỪNG (WELCOME & PRE-GAME CONSOLE) -->
+        <section class="arena-view welcome-screen active" id="view-welcome">
+          <div class="welcome-logo-wrap">
+            <svg class="welcome-laurel-badge" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="60" cy="60" r="54" fill="#0D1F52" stroke="#e5a50a" stroke-width="4"/>
+              <!-- Chiếc cúp vô địch mạ vàng -->
+              <path d="M42 42 L78 42 L72 68 C70 76 50 76 48 68 Z" fill="#e5a50a" stroke="#B45309" stroke-width="2"/>
+              <path d="M36 46 C30 46 28 58 38 60 L42 58" fill="none" stroke="#e5a50a" stroke-width="3"/>
+              <path d="M84 46 C90 46 92 58 82 60 L78 58" fill="none" stroke="#e5a50a" stroke-width="3"/>
+              <rect x="56" y="74" width="8" height="12" fill="#D97706"/>
+              <rect x="46" y="86" width="28" height="8" rx="3" fill="#e5a50a" stroke="#B45309" stroke-width="1.5"/>
+              <circle cx="60" cy="54" r="5" fill="#FFFFFF"/>
+            </svg>
+          </div>
+
+          <h2 class="welcome-heading">ĐƯỜNG LÊN ĐỈNH OLYMPIA</h2>
+          <p class="welcome-sub">Chào mừng các nhà leo núi nhí đến với đấu trường tri thức hào hùng và sôi động!</p>
+
+          <!-- BÀN ĐIỀU HÀNH THIẾT LẬP TRƯỚC TRẬN ĐẤU (PRE-GAME SETUP CONSOLE) -->
+          <div class="pregame-setup-card" data-ui>
+            <div class="pregame-header">
+              <div class="pregame-badge">BÀN ĐIỀU HÀNH TRẬN ĐẤU</div>
+              <span class="pregame-hint">Cấu hình Sự kiện, Bộ đề thi và 4 Đội thi đấu trước khi bắt đầu</span>
+            </div>
+
+            <div class="pregame-controls-grid">
+              <!-- Cột 1: Chọn Sự kiện / Trận đấu -->
+              <div class="pregame-control-col">
+                <label class="pregame-label" for="pregame-event-select">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                  SỰ KIỆN / TRẬN ĐẤU:
+                </label>
+                <div class="pregame-input-row">
+                  <select id="pregame-event-select" class="form-select pregame-select" onchange="window.game.handleSelectEvent(this.value)">
+                    <!-- Render động bằng JS -->
+                  </select>
+                  <button type="button" class="btn-pregame-action" id="btn-pregame-new-event" onclick="window.game.handleCreateNewEvent()" title="Tạo sự kiện mới">
+                    + Tạo mới
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cột 2: Chọn Bộ đề thi -->
+              <div class="pregame-control-col">
+                <label class="pregame-label" for="pregame-bank-select">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                  BỘ ĐỀ THI GẮN KÈM:
+                </label>
+                <div class="pregame-input-row">
+                  <select id="pregame-bank-select" class="form-select pregame-select" onchange="window.game.handleSelectBank(this.value)">
+                    <!-- Render động bằng JS -->
+                  </select>
+                  <button type="button" class="btn-pregame-action" onclick="window.game.openSettings('bank')" title="Mở ngân hàng đề để xem hoặc chỉnh sửa">
+                    Soạn đề
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tên 4 Đội thi đấu (Quick edit trực tiếp) -->
+            <div class="pregame-teams-section">
+              <div class="pregame-teams-label">TÊN 4 ĐỘI THI ĐẤU (THẦY CÔ CÓ THỂ ĐỔI NHANH TẠI ĐÂY):</div>
+              <div class="pregame-teams-grid">
+                <div class="pregame-team-box team-1-box">
+                  <span class="team-dot dot-1">1</span>
+                  <input type="text" id="pregame-team-1" class="pregame-team-input" value="Đội Tri Thức" placeholder="Tên Đội 1" onchange="window.game.updateQuickTeam(1, this.value)">
+                </div>
+                <div class="pregame-team-box team-2-box">
+                  <span class="team-dot dot-2">2</span>
+                  <input type="text" id="pregame-team-2" class="pregame-team-input" value="Đội Khám Phá" placeholder="Tên Đội 2" onchange="window.game.updateQuickTeam(2, this.value)">
+                </div>
+                <div class="pregame-team-box team-3-box">
+                  <span class="team-dot dot-3">3</span>
+                  <input type="text" id="pregame-team-3" class="pregame-team-input" value="Đội Sáng Tạo" placeholder="Tên Đội 3" onchange="window.game.updateQuickTeam(3, this.value)">
+                </div>
+                <div class="pregame-team-box team-4-box">
+                  <span class="team-dot dot-4">4</span>
+                  <input type="text" id="pregame-team-4" class="pregame-team-input" value="Đội Vươn Cao" placeholder="Tên Đội 4" onchange="window.game.updateQuickTeam(4, this.value)">
+                </div>
+              </div>
+            </div>
+
+            <!-- Nút Bắt đầu trận đấu & Cài đặt chuyên sâu -->
+            <div class="pregame-actions-bar">
+              <button class="btn-olympia-start" id="btn-start-game">
+                <span>BẮT ĐẦU TRẬN ĐẤU</span>
+              </button>
+              <button type="button" class="btn-action btn-reveal" onclick="window.game.openSettings('event')">
+                Quản lý Sự kiện & Ngân hàng đề
+              </button>
+            </div>
+          </div>
+
+          <!-- Dải tóm tắt 4 vòng thi -->
+          <div class="welcome-rounds-grid compact-strip">
+            <div class="round-info-card">
+              <div class="card-num">VÒNG 1</div>
+              <div class="card-name">KHỞI ĐỘNG</div>
+              <div class="card-rule">5 câu/đội, 10đ/câu, 15 giây</div>
+            </div>
+            <div class="round-info-card">
+              <div class="card-num">VÒNG 2</div>
+              <div class="card-name">VƯỢT CHƯỚNG NGẠI VẬT</div>
+              <div class="card-rule">4 gợi ý hàng ngang, từ khóa 40đ</div>
+            </div>
+            <div class="round-info-card">
+              <div class="card-num">VÒNG 3</div>
+              <div class="card-name">TĂNG TỐC</div>
+              <div class="card-rule">4 câu tư duy: 10, 20, 30, 40đ</div>
+            </div>
+            <div class="round-info-card">
+              <div class="card-num">VÒNG 4</div>
+              <div class="card-name">VỀ ĐÍCH</div>
+              <div class="card-rule">Gói 20, 30, 40đ & Ngôi Sao Hy Vọng</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 1: VÒNG 1 - KHỞI ĐỘNG -->
+        <section class="arena-view" id="view-round1">
+          <div class="question-top-bar">
+            <div class="question-meta">
+              <span class="badge-round-tag">VÒNG 1: KHỞI ĐỘNG</span>
+              <span class="badge-current-team" id="r1-team-badge">LƯỢT THI: ĐỘI 1</span>
+              <span class="badge-points" id="r1-q-num">CÂU 1/5</span>
+            </div>
+
+            <!-- Đồng hồ đếm ngược 15 giây hình tròn SVG -->
+            <div class="countdown-box" id="r1-timer-box">
+              <div class="countdown-circle">
+                <svg class="countdown-svg" viewBox="0 0 60 60">
+                  <circle class="countdown-bg-ring" cx="30" cy="30" r="26"></circle>
+                  <circle class="countdown-progress-ring" id="r1-timer-ring" cx="30" cy="30" r="26"></circle>
+                </svg>
+                <div class="countdown-number" id="r1-timer-num">15</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nội dung câu hỏi lớn -->
+          <div class="question-display-area">
+            <h3 class="question-text" id="r1-q-text">Đang tải câu hỏi...</h3>
+          </div>
+
+          <!-- Lưới 4 đáp án A B C D -->
+          <div class="answers-grid" id="r1-answers"></div>
+
+          <!-- Thanh công cụ giáo viên cho Vòng 1 -->
+          <div class="interactive-toolbar">
+            <div class="toolbar-group">
+              <button class="btn-action btn-correct" onclick="window.game.r1GradeCorrect()">Đúng (+10đ)</button>
+              <button class="btn-action btn-wrong" onclick="window.game.r1GradeWrong()">Sai (0đ)</button>
+              <button class="btn-action btn-prev" onclick="window.game.r1PrevQuestion()">Quay lại</button>
+              <button class="btn-action btn-next" onclick="window.game.r1NextQuestion()">Câu tiếp theo</button>
+            </div>
+            <div class="toolbar-group">
+              <button class="btn-action btn-reveal" onclick="window.game.pauseResumeTimer(window.game.r1TimerNum, window.game.r1TimerRing, window.game.r1TimerBox)">Tạm dừng / Chạy tiếp</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 2: VÒNG 2 - VƯỢT CHƯỚNG NGẠI VẬT -->
+        <section class="arena-view" id="view-round2">
+          <div class="question-top-bar">
+            <div class="question-meta">
+              <span class="badge-round-tag">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
+              <span class="badge-points">TỪ KHÓA BÍ ẨN: 40 ĐIỂM</span>
+            </div>
+            <button class="btn-guess-obstacle" id="btn-guess-obstacle">
+              <span>BẤM CHUÔNG ĐOÁN TỪ KHÓA (40Đ)</span>
+            </button>
+          </div>
+
+          <div class="obstacle-layout">
+            <!-- Cột trái: Tranh bí ẩn và 4 miếng ghép che phủ -->
+            <div class="obstacle-image-container">
+              <img id="r2-secret-image" class="obstacle-image-canvas" alt="Chướng ngại vật">
+              
+              <!-- 4 Mảnh ghép che ảnh -->
+              <div class="puzzle-cover-grid">
+                <div class="puzzle-tile" id="puzzle-tile-1" onclick="window.game.activeRowIdx=0; window.game.renderRound2();">
+                  <div class="puzzle-tile-num">1</div>
+                  <div class="puzzle-tile-label">Hàng ngang 1</div>
+                </div>
+                <div class="puzzle-tile" id="puzzle-tile-2" onclick="window.game.activeRowIdx=1; window.game.renderRound2();">
+                  <div class="puzzle-tile-num">2</div>
+                  <div class="puzzle-tile-label">Hàng ngang 2</div>
+                </div>
+                <div class="puzzle-tile" id="puzzle-tile-3" onclick="window.game.activeRowIdx=2; window.game.renderRound2();">
+                  <div class="puzzle-tile-num">3</div>
+                  <div class="puzzle-tile-label">Hàng ngang 3</div>
+                </div>
+                <div class="puzzle-tile" id="puzzle-tile-4" onclick="window.game.activeRowIdx=3; window.game.renderRound2();">
+                  <div class="puzzle-tile-num">4</div>
+                  <div class="puzzle-tile-label">Hàng ngang 4</div>
+                </div>
+              </div>
+
+              <!-- Ô tròn trung tâm -->
+              <div class="puzzle-center-piece" id="puzzle-center-piece">CNV</div>
+            </div>
+
+            <!-- Cột phải: 4 hàng ngang và câu hỏi gợi ý -->
+            <div class="obstacle-rows-container">
+              <div class="keyword-hint-badge">
+                <span>TỪ KHÓA CHƯỚNG NGẠI VẬT:</span>
+                <div class="keyword-letters-display" id="r2-keyword-letters"></div>
+              </div>
+
+              <!-- Danh sách 4 hàng ngang -->
+              <div class="rows-list" id="r2-rows-list"></div>
+
+              <!-- Chi tiết câu hỏi hàng ngang đang chọn -->
+              <div class="question-display-area" style="min-height: 110px;">
+                <p class="question-text" id="r2-question-text" style="font-size: 1.15rem;">Chọn một hàng ngang để đọc câu hỏi.</p>
+                <div id="r2-answer-reveal" style="display:none; color:var(--gold-primary); font-weight:bold; margin-top:8px; font-size:1.1rem;"></div>
+              </div>
+
+              <!-- Thanh công cụ chấm điểm cho hàng ngang -->
+              <div class="interactive-toolbar">
+                <div class="toolbar-group">
+                  <button class="btn-action btn-correct" onclick="window.game.r2SolveActiveRow(true)">Mở hàng ngang (+10đ)</button>
+                  <button class="btn-action btn-wrong" onclick="window.game.r2SolveActiveRow(false)">Chưa mở được</button>
+                </div>
+                <div class="toolbar-group">
+                  <span style="font-size: 0.85rem; color: var(--text-dim); font-weight: 600;">Chọn bục đội bên dưới để nhận điểm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 3: VÒNG 3 - TĂNG TỐC -->
+        <section class="arena-view" id="view-round3">
+          <div class="question-top-bar">
+            <div class="question-meta">
+              <span class="badge-round-tag">VÒNG 3: TĂNG TỐC</span>
+              <span class="badge-current-team" id="r3-q-num">CÂU 1/4</span>
+              <span class="badge-points" id="r3-points-badge">10 ĐIỂM - 20 GIÂY</span>
+            </div>
+
+            <!-- Đồng hồ 20s -->
+            <div class="countdown-box" id="r3-timer-box">
+              <div class="countdown-circle">
+                <svg class="countdown-svg" viewBox="0 0 60 60">
+                  <circle class="countdown-bg-ring" cx="30" cy="30" r="26"></circle>
+                  <circle class="countdown-progress-ring" id="r3-timer-ring" cx="30" cy="30" r="26"></circle>
+                </svg>
+                <div class="countdown-number" id="r3-timer-num">20</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="question-display-area">
+            <h3 class="question-text" id="r3-q-text">Đang tải câu hỏi tư duy nhanh...</h3>
+          </div>
+
+          <div class="answers-grid" id="r3-answers"></div>
+
+          <!-- BẢNG BẤM CHUÔNG & THEO DÕI THỜI GIAN 4 ĐỘI (SPEED TRACKER) -->
+          <div class="speed-tracker-panel" id="r3-speed-panel">
+            <div class="speed-panel-header">
+              <div class="speed-title-tag">
+                <span class="speed-dot-pulse"></span>
+                <span>THEO DÕI TỐC ĐỘ TRẢ LỜI 4 ĐỘI (BẤM PHÍM 1, 2, 3, 4 HOẶC CLICK VÀO ĐỘI)</span>
+              </div>
+              <div class="speed-actions">
+                <button type="button" class="btn-action btn-sm btn-ghost" onclick="window.game.r3ResetBuzzers()">Đặt lại lượt bấm</button>
+              </div>
+            </div>
+
+            <!-- 4 Nút bấm chuông đội -->
+            <div class="speed-buzzers-row" id="r3-buzzers-row"></div>
+
+            <!-- Bảng xét kết quả tốc độ & cộng điểm chuẩn Olympia 40-30-20-10 -->
+            <div class="speed-ranking-container" id="r3-speed-ranking"></div>
+          </div>
+
+          <div class="interactive-toolbar">
+            <div class="toolbar-group">
+              <button class="btn-action btn-correct" onclick="window.game.r3GradeCorrect()">Đúng (+Điểm)</button>
+              <button class="btn-action btn-wrong" onclick="window.game.r3GradeWrong()">Sai (0đ)</button>
+              <button class="btn-action btn-reveal" onclick="window.game.r3RevealAnswer()">Hiện đáp án</button>
+              <button class="btn-action btn-prev" onclick="window.game.r3PrevQuestion()">Câu trước</button>
+              <button class="btn-action btn-next" onclick="window.game.r3NextQuestion()">Câu tiếp theo</button>
+            </div>
+            <div class="toolbar-group">
+              <button class="btn-action btn-reveal" onclick="window.game.pauseResumeTimer(window.game.r3TimerNum, window.game.r3TimerRing, window.game.r3TimerBox)">Tạm dừng / Chạy tiếp</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: VÒNG 4 - VỀ ĐÍCH -->
+        <section class="arena-view" id="view-round4">
+          <div class="question-top-bar">
+            <div class="question-meta">
+              <span class="badge-round-tag">VÒNG 4: VỀ ĐÍCH</span>
+              <span class="badge-current-team" id="r4-team-badge">ĐỘI THI: ĐỘI 1</span>
+              <span class="badge-points" id="r4-points-badge">GÓI 20 ĐIỂM</span>
+            </div>
+
+            <!-- Đồng hồ vòng 4 -->
+            <div class="countdown-box" id="r4-timer-box">
+              <div class="countdown-circle">
+                <svg class="countdown-svg" viewBox="0 0 60 60">
+                  <circle class="countdown-bg-ring" cx="30" cy="30" r="26"></circle>
+                  <circle class="countdown-progress-ring" id="r4-timer-ring" cx="30" cy="30" r="26"></circle>
+                </svg>
+                <div class="countdown-number" id="r4-timer-num">20</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Nút chọn gói câu hỏi 20, 30, 40 điểm -->
+          <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center; flex-wrap:wrap;">
+            <span style="font-size:0.9rem; font-weight:800; color:var(--text-main);">Chọn gói câu hỏi:</span>
+            <button class="btn-action btn-next" onclick="window.game.r4SelectPack(20)">Gói 20 Điểm</button>
+            <button class="btn-action btn-next" onclick="window.game.r4SelectPack(30)">Gói 30 Điểm</button>
+            <button class="btn-action btn-next" onclick="window.game.r4SelectPack(40)">Gói 40 Điểm</button>
+            <button class="btn-action btn-star-hope" id="btn-r4-star" onclick="window.game.toggleStarOfHope()">Đặt Ngôi Sao Hy Vọng</button>
+          </div>
+
+          <div class="question-display-area">
+            <h3 class="question-text" id="r4-q-text">Đang tải câu hỏi Về đích...</h3>
+          </div>
+
+          <div class="answers-grid" id="r4-answers"></div>
+
+          <div class="interactive-toolbar">
+            <div class="toolbar-group">
+              <button class="btn-action btn-correct" onclick="window.game.r4GradeCorrect()">Đúng (+Điểm)</button>
+              <button class="btn-action btn-wrong" onclick="window.game.r4GradeWrong()">Sai (0đ)</button>
+              <button class="btn-action btn-reveal" onclick="window.game.r4RevealAnswer()">Hiện đáp án</button>
+              <button class="btn-action btn-next" onclick="window.game.r4NextQuestion()">Câu tiếp theo / Đội tiếp</button>
+            </div>
+            <div class="toolbar-group">
+              <button class="btn-action btn-reveal" onclick="window.game.pauseResumeTimer(window.game.r4TimerNum, window.game.r4TimerRing, window.game.r4TimerBox)">Tạm dừng / Chạy tiếp</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 5: CHUNG KẾT & TRAO GIẢI VÔ ĐỊCH -->
+        <section class="arena-view" id="view-finale" style="position:relative;">
+          <!-- Canvas bắn pháo hoa ăn mừng -->
+          <canvas id="fireworks-canvas"></canvas>
+
+          <div class="finale-container">
+            <div class="victory-title-wrap">
+              <div class="podium-crown-badge">VÔ ĐỊCH</div>
+              <h2 class="victory-headline" id="finale-winner-name">CHÚC MỪNG NHÀ VÔ ĐỊCH!</h2>
+              <p class="victory-sub">Vinh quang đỉnh núi tri thức Olympia thuộc về những nhà leo núi xuất sắc nhất!</p>
+            </div>
+
+            <!-- Bục trao giải 4 thứ hạng -->
+            <div class="podium-stage">
+              <!-- Hạng 2 -->
+              <div class="podium-column" id="podium-2">
+                <div class="podium-avatar-wrap">
+                  <span class="podium-rank-tag">Hạng 2</span>
+                  <div class="podium-team-name">Đội Khám Phá</div>
+                  <div class="podium-score-pill">0 ĐIỂM</div>
+                </div>
+                <div class="podium-block podium-2">2</div>
+              </div>
+
+              <!-- Hạng 1 (Vô địch) -->
+              <div class="podium-column" id="podium-1">
+                <div class="podium-avatar-wrap">
+                  <span class="podium-rank-tag gold">Quán Quân</span>
+                  <div class="podium-team-name">Đội Tri Thức</div>
+                  <div class="podium-score-pill">0 ĐIỂM</div>
+                </div>
+                <div class="podium-block podium-1">1</div>
+              </div>
+
+              <!-- Hạng 3 -->
+              <div class="podium-column" id="podium-3">
+                <div class="podium-avatar-wrap">
+                  <span class="podium-rank-tag">Hạng 3</span>
+                  <div class="podium-team-name">Đội Sáng Tạo</div>
+                  <div class="podium-score-pill">0 ĐIỂM</div>
+                </div>
+                <div class="podium-block podium-3">3</div>
+              </div>
+
+              <!-- Hạng 4 -->
+              <div class="podium-column" id="podium-4">
+                <div class="podium-avatar-wrap">
+                  <span class="podium-rank-tag">Hạng 4</span>
+                  <div class="podium-team-name">Đội Vươn Cao</div>
+                  <div class="podium-score-pill">0 ĐIỂM</div>
+                </div>
+                <div class="podium-block podium-4">4</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 24px; z-index: 20;">
+              <button class="btn-olympia-start" onclick="window.game.resetAllGame()">
+                <span>CHƠI LẠI TRẬN ĐẤU MỚI</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ======================================================================
+         BOTTOM STAGE: 4 BỤC THI ĐẤU DÀNH CHO 4 ĐỘI
+         ====================================================================== -->
+    <footer class="stage-pedestals" id="stage-pedestals">
+      <!-- 4 Bục thi đấu sẽ được JavaScript render động -->
+    </footer>
+
+  </div>
+
+  <!-- ======================================================================
+       MODAL 1: BẢNG XẾP HẠNG ĐIỂM SỐ 4 ĐỘI
+       ====================================================================== -->
+  <div class="modal-overlay" id="modal-leaderboard" data-ui>
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">BẢNG XẾP HẠNG ĐIỂM SỐ</h3>
+        <button class="btn-close-modal" id="btn-close-lb">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="leaderboard-list" id="leaderboard-content-list"></div>
+      </div>
+      <div class="modal-footer" style="justify-content: flex-end;">
+        <button class="btn-action btn-next" onclick="window.game.closeModals()">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: BẢNG CÀI ĐẶT & QUẢN LÝ CÂU HỎI DÀNH CHO GIÁO VIÊN
+       ====================================================================== -->
+  <div class="modal-overlay" id="modal-settings" data-ui>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">CÀI ĐẶT VÀ TÙY CHỈNH NỘI DUNG BÀI HỌC</h3>
+        <button class="btn-close-modal" id="btn-close-settings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-tabs">
+          <button type="button" class="tab-btn active" onclick="window.showSettingsTab('event')">1. Quản lý Sự kiện</button>
+          <button type="button" class="tab-btn" onclick="window.showSettingsTab('bank')">2. Ngân hàng Đề thi</button>
+          <button type="button" class="tab-btn" onclick="window.showSettingsTab('teams')">3. 4 Đội thi đấu</button>
+          <button type="button" class="tab-btn" onclick="window.showSettingsTab('json')">4. Nhập và Xuất File JSON</button>
+          <button type="button" class="tab-btn" onclick="window.showSettingsTab('firebase')">5. Đồng bộ Firebase Đám mây</button>
+        </div>
+
+        <!-- Tab 1: Quản lý Sự kiện / Trận đấu -->
+        <div id="tab-pane-event">
+          <div class="event-picker-bar">
+            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+              <label class="form-label" for="set-event-list-select">Chọn Sự kiện đang quản lý:</label>
+              <select id="set-event-list-select" class="form-select" onchange="window.game.handleSettingsEventSelect(this.value)"></select>
+            </div>
+            <div class="event-btn-group">
+              <button type="button" class="btn-action btn-correct" onclick="window.game.handleCreateNewEvent()">+ Tạo Sự kiện</button>
+              <button type="button" class="btn-action btn-reveal" onclick="window.game.handleDuplicateEvent()">Nhân bản</button>
+              <button type="button" class="btn-action btn-wrong" onclick="window.game.handleDeleteEvent()">Xóa Sự kiện</button>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top: 14px;">
+            <div class="form-group">
+              <label class="form-label" for="set-game-title">Tên Sự kiện / Trận đấu:</label>
+              <input type="text" id="set-game-title" class="form-input">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="set-event-bank-select">Bộ đề thi sử dụng cho trận đấu này:</label>
+              <select id="set-event-bank-select" class="form-select"></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="set-subject">Môn học:</label>
+              <input type="text" id="set-subject" class="form-input" placeholder="Toán, Tiếng Việt, Khoa học...">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="set-grade">Khối lớp:</label>
+              <input type="text" id="set-grade" class="form-input" placeholder="Lớp 3A, Lớp 4B, Lớp 5...">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="set-topic">Chủ đề bài học / Ghi chú trận đấu:</label>
+            <input type="text" id="set-topic" class="form-input" placeholder="Ôn tập học kỳ, Đố vui...">
+          </div>
+        </div>
+
+        <!-- Tab 2: Ngân hàng Đề thi (Question Bank Studio) -->
+        <div id="tab-pane-bank" style="display:none;">
+          <div class="bank-picker-bar">
+            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+              <label class="form-label" for="set-bank-studio-select">Chọn Bộ đề thi để xem và chỉnh sửa:</label>
+              <select id="set-bank-studio-select" class="form-select" onchange="window.game.handleSettingsBankSelect(this.value)"></select>
+            </div>
+            <div class="event-btn-group">
+              <button type="button" class="btn-action btn-correct" onclick="window.game.handleCreateNewBank()">+ Tạo Bộ đề mới</button>
+              <button type="button" class="btn-action btn-reveal" onclick="window.game.handleDuplicateBank()">Nhân bản đề</button>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top: 12px; margin-bottom: 12px;">
+            <div class="form-group">
+              <label class="form-label" for="bank-title-input">Tên Bộ đề thi:</label>
+              <input type="text" id="bank-title-input" class="form-input" onchange="window.game.updateSelectedBankMeta()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bank-subject-input">Môn học:</label>
+              <input type="text" id="bank-subject-input" class="form-input" onchange="window.game.updateSelectedBankMeta()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bank-grade-input">Khối lớp:</label>
+              <input type="text" id="bank-grade-input" class="form-input" onchange="window.game.updateSelectedBankMeta()">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+            <label class="form-label" for="editor-round-select" style="margin-bottom:0;">Chọn vòng thi để xem và sửa câu hỏi:</label>
+            <select id="editor-round-select" class="form-select" style="max-width:280px;" onchange="window.game.renderVisualQuestionEditor()">
+              <option value="1">Vòng 1: Khởi Động (5 câu/đội)</option>
+              <option value="2">Vòng 2: Vượt CNV (4 hàng & Từ khóa)</option>
+              <option value="3">Vòng 3: Tăng Tốc (4 câu 10-40đ)</option>
+              <option value="4">Vòng 4: Về Đích (Gói 20, 30, 40đ)</option>
+            </select>
+          </div>
+          <div id="editor-questions-list" style="display:flex; flex-direction:column; gap:12px; max-height:380px; overflow-y:auto; padding-right:6px;">
+            <!-- Render động bằng JavaScript -->
+          </div>
+        </div>
+
+        <!-- Tab 3: 4 Đội thi đấu -->
+        <div id="tab-pane-teams" style="display:none;">
+          <p style="color:var(--text-sub); font-size:0.88rem; margin-bottom:12px; font-weight:500;">
+            Tùy chỉnh tên và điểm số hiện tại của 4 đội trong sự kiện đang chọn:
+          </p>
+          <div class="teams-manager-grid">
+            <div class="team-manage-card team-manage-card-1">
+              <h5 class="team-manage-title team-1-color">Đội 1 (Đỏ)</h5>
+              <div class="form-group">
+                <label class="form-label" for="set-team-1">Tên đội:</label>
+                <input type="text" id="set-team-1" class="form-input">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="set-score-1">Điểm số hiện tại:</label>
+                <input type="number" id="set-score-1" class="form-input" min="0" step="10">
+              </div>
+            </div>
+            <div class="team-manage-card team-manage-card-2">
+              <h5 class="team-manage-title team-2-color">Đội 2 (Xanh)</h5>
+              <div class="form-group">
+                <label class="form-label" for="set-team-2">Tên đội:</label>
+                <input type="text" id="set-team-2" class="form-input">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="set-score-2">Điểm số hiện tại:</label>
+                <input type="number" id="set-score-2" class="form-input" min="0" step="10">
+              </div>
+            </div>
+            <div class="team-manage-card team-manage-card-3">
+              <h5 class="team-manage-title team-3-color">Đội 3 (Vàng)</h5>
+              <div class="form-group">
+                <label class="form-label" for="set-team-3">Tên đội:</label>
+                <input type="text" id="set-team-3" class="form-input">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="set-score-3">Điểm số hiện tại:</label>
+                <input type="number" id="set-score-3" class="form-input" min="0" step="10">
+              </div>
+            </div>
+            <div class="team-manage-card team-manage-card-4">
+              <h5 class="team-manage-title team-4-color">Đội 4 (Lục)</h5>
+              <div class="form-group">
+                <label class="form-label" for="set-team-4">Tên đội:</label>
+                <input type="text" id="set-team-4" class="form-input">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" for="set-score-4">Điểm số hiện tại:</label>
+                <input type="number" id="set-score-4" class="form-input" min="0" step="10">
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn-action btn-wrong" onclick="window.game.resetTeamScores()">Đặt lại điểm 4 đội về 0</button>
+          </div>
+        </div>
+
+        <!-- Tab 4: Quản lý JSON Data -->
+        <div id="tab-pane-json" style="display:none;">
+          <div class="form-group">
+            <label class="form-label" for="set-json-area">Dữ liệu ngân hàng câu hỏi & toàn bộ sự kiện (JSON):</label>
+            <textarea id="set-json-area" class="form-textarea" rows="10"></textarea>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px;">
+            <button type="button" class="btn-action btn-correct" onclick="window.game.downloadJSONFile()">Tải file JSON về máy</button>
+            <label class="btn-action btn-reveal" style="cursor:pointer; margin:0;">
+              Mở file từ máy tính
+              <input type="file" id="json-file-input" accept=".json" style="display:none;" onchange="window.game.handleFileUpload(event)">
+            </label>
+            <button type="button" class="btn-action btn-next" onclick="window.game.importJSONSettings()">Nạp từ ô văn bản trên</button>
+            <button type="button" class="btn-action btn-wrong" onclick="window.game.restoreDefaultQuestions()">Khôi phục dữ liệu mẫu ban đầu</button>
+          </div>
+        </div>
+
+        <!-- Tab 5: Đồng bộ Firebase Đám mây -->
+        <div id="tab-pane-firebase" style="display:none;">
+          <div class="firebase-panel-intro">
+            <div class="firebase-status-banner" id="firebase-status-banner">
+              <span class="cloud-banner-dot" id="firebase-banner-dot"></span>
+              <span id="firebase-banner-text">Trạng thái: Đang kiểm tra...</span>
+            </div>
+            <p style="color:var(--text-sub); font-size:0.86rem; margin-top:8px; line-height:1.4;">
+              Đồng bộ dữ liệu Sự kiện và Ngân hàng câu hỏi lên đám mây Google Firebase hoàn toàn miễn phí. Soạn đề ở nhà trên máy cá nhân, lên lớp mở máy chiếu là thấy ngay!
+            </p>
+          </div>
+
+          <div class="form-row" style="margin-top: 14px;">
+            <div class="form-group" style="grid-column: span 2; margin-bottom: 10px;">
+              <label class="form-label" for="fb-database-url">Địa chỉ Firebase Realtime Database (Database URL):</label>
+              <input type="text" id="fb-database-url" class="form-input" placeholder="https://olympia-tieuhoc-default-rtdb.firebaseio.com">
+              <span style="font-size:0.75rem; color:var(--text-dim); display:block; margin-top:4px;">
+                Link cơ sở dữ liệu lấy từ Firebase Console (Realtime Database &rarr; Data URL)
+              </span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="fb-workspace-key">Phòng học / Khóa lưu trữ (Workspace Key):</label>
+              <input type="text" id="fb-workspace-key" class="form-input" value="olympia_lop_hoc" placeholder="olympia_lop_hoc">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fb-auth-secret">Mã bí mật xác thực / Secret Token (tùy chọn):</label>
+              <input type="password" id="fb-auth-secret" class="form-input" placeholder="Để trống nếu để chế độ công khai">
+            </div>
+          </div>
+
+          <div class="firebase-actions-row">
+            <button type="button" class="btn-action btn-reveal" onclick="window.game.testFirebaseConnection()">Kiểm tra kết nối</button>
+            <button type="button" class="btn-action btn-correct" onclick="window.game.saveFirebaseConfigAndPush()">Lưu và Đẩy lên Đám mây</button>
+            <button type="button" class="btn-action btn-next" onclick="window.game.pullFromFirebase()">Tải đề từ Đám mây về máy</button>
+          </div>
+
+          <div class="firebase-guide-box">
+            <div class="guide-title">HƯỚNG DẪN 3 BƯỚC TẠO FIREBASE MIỄN PHÍ VĨNH VIỄN:</div>
+            <ol class="guide-steps">
+              <li>Truy cập <a href="https://console.firebase.google.com" target="_blank" rel="noopener noreferrer" style="color:var(--gold-primary); text-decoration:underline;">console.firebase.google.com</a>, đăng nhập bằng Gmail và bấm <strong>Tạo dự án mới</strong> (Ví dụ: <em>olympia-lop-hoc</em>).</li>
+              <li>Vào mục <strong>Build &rarr; Realtime Database</strong> &rarr; Bấm <strong>Create Database</strong> &rarr; Chọn <strong>Start in test mode</strong> (hoặc Rules: <code>".read": true, ".write": true</code>).</li>
+              <li>Sao chép đường link dạng <code>https://...-default-rtdb.firebaseio.com/</code> dán vào ô Database URL phía trên và bấm <strong>Lưu và Đẩy lên Đám mây</strong>.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-action btn-wrong" onclick="window.game.resetAllGame()">Đặt lại toàn bộ điểm số</button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-action btn-reveal" onclick="window.game.closeModals()">Đóng</button>
+          <button class="btn-action btn-correct" onclick="window.game.saveSettings()">Lưu Cài Đặt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ĐĂNG NHẬP HỆ THỐNG (LOGIN MODAL) -->
+  <div class="modal-overlay" id="modal-login" data-ui>
+    <div class="modal-content modal-login-box">
+      <div class="login-header">
+        <svg class="login-laurel-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="42" stroke="#e5a50a" stroke-width="3" stroke-dasharray="6,4"/>
+          <path d="M30 75 C18 60 18 35 34 22 C36 29 33 42 42 48 C42 35 48 26 50 18 C52 26 58 35 58 48 C67 42 64 29 66 22 C82 35 82 60 70 75" fill="none" stroke="#e5a50a" stroke-width="4" stroke-linecap="round"/>
+          <path d="M46 78 L54 78 L52 56 L48 56 Z" fill="#D97706"/>
+          <path d="M50 36 C45 42 45 48 50 54 C55 48 55 42 50 36 Z" fill="#c82333"/>
+          <path d="M50 40 C48 44 48 48 50 51 C52 48 52 44 50 40 Z" fill="#e5a50a"/>
+        </svg>
+        <h3 class="login-title">ĐĂNG NHẬP HỆ THỐNG</h3>
+        <p class="login-subtitle">Bàn điều hành Giáo viên & Ban Tổ chức Olympia</p>
+      </div>
+
+      <form id="form-login" onsubmit="event.preventDefault(); window.game.handleLogin();">
+        <div class="login-form-body">
+          <div class="form-group">
+            <label class="form-label" for="login-username">Tên đăng nhập:</label>
+            <div class="input-with-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <input type="text" id="login-username" class="form-input" value="admin" placeholder="Nhập tên đăng nhập" required autocomplete="username">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-password">Mật khẩu:</label>
+            <div class="input-with-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <input type="password" id="login-password" class="form-input" value="admin" placeholder="Nhập mật khẩu" required autocomplete="current-password">
+            </div>
+          </div>
+
+          <div id="login-error-msg" class="login-error-text" style="display:none;"></div>
+        </div>
+
+        <div class="login-form-footer">
+          <button type="submit" class="btn-action btn-login-submit" id="btn-submit-login">
+            <span>ĐĂNG NHẬP TRƯỜNG QUAY</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast thông báo nhỏ góc dưới -->
+  <div class="toast-notice" id="toast-notice" data-ui>Thông báo</div>
+
+  <!-- VITE ENTRY POINT -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

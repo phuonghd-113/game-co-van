@@ -1,0 +1,2432 @@
+/* ==========================================================================
+   ĐƯỜNG LÊN ĐỈNH OLYMPIA - CLASSROOM & PRIMARY SCHOOL ART DIRECTION
+   Phong cách: Sáng sủa, tươi vui, thân thiện & tràn đầy năng lượng
+   Chuẩn mực cho học sinh tiểu học (Lớp 3 - 4 - 5), rõ nét trên máy chiếu ban ngày
+   ========================================================================== */
+
+:root {
+  /* Tông màu sáng sủa, tươi vui & thân thiện (Phong cách Rung Chuông Vàng / Kahoot) */
+  --stage-void: #f0f5ff;
+  --stage-bg: #e6eefa;
+  --stage-surface: #ffffff;
+  --stage-surface-card: #ffffff;
+  --stage-surface-card-hover: #f8fafc;
+  
+  /* Màu sắc chủ đạo tươi sáng */
+  --gold-primary: #f59e0b;
+  --gold-bright: #fbbf24;
+  --gold-deep: #d97706;
+  --blue-brand: #1d4ed8;
+  --blue-glow: #60a5fa;
+
+  /* Màu chữ có độ tương phản cao cho máy chiếu ban ngày */
+  --text-main: #0f172a;
+  --text-sub: #475569;
+  --text-dim: #64748b;
+  --border-light: #cbd5e1;
+  --border-subtle: #e2e8f0;
+  
+  /* 4 Đội thi đấu - Màu sắc tươi sáng, rực rỡ chuẩn học sinh tiểu học */
+  --team-1: #dc2626; /* Đội Tri Thức - Đỏ Tươi */
+  --team-2: #2563eb; /* Đội Khám Phá - Xanh Biển */
+  --team-3: #d97706; /* Đội Sáng Tạo - Vàng Nắng */
+  --team-4: #059669; /* Đội Vươn Cao - Xanh Lá Mạ */
+
+  /* Kiểu chữ tiêu chuẩn */
+  --font-body: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Be Vietnam Pro', -apple-system, sans-serif;
+
+  /* Bán kính bo góc thân thiện */
+  --radius-xl: 18px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--stage-void);
+  font-family: var(--font-body);
+  color: var(--text-main);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   STAGE ARCHITECTURE & LIGHTING BEAMS (SÂN KHẤU BAN NGÀY TƯƠI SÁNG)
+   ========================================================================== */
+.olympia-stage {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #f0f5ff 0%, #e0ecff 55%, #f8fafc 100%); /* taste-skill-ignore */
+  overflow: hidden;
+}
+
+/* Chùm ánh sáng rực rỡ tươi vui */
+.stage-spotlights {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.spotlight {
+  position: absolute;
+  top: 0;
+  width: 480px;
+  height: 130%;
+  opacity: 0.12;
+  filter: blur(36px);
+  transform-origin: top center;
+  animation: sweepStageLight 12s ease-in-out infinite alternate;
+}
+
+.spotlight-left-1 {
+  left: 8%;
+  background: conic-gradient(from 170deg at 50% 0%, transparent 0deg, rgba(37, 99, 235, 0.5) 14deg, transparent 28deg); /* taste-skill-ignore */
+  animation-duration: 9s;
+}
+
+.spotlight-left-2 {
+  left: 26%;
+  background: conic-gradient(from 175deg at 50% 0%, transparent 0deg, rgba(245, 158, 11, 0.5) 12deg, transparent 24deg); /* taste-skill-ignore */
+  animation-duration: 11s;
+  animation-delay: -3s;
+}
+
+.spotlight-right-1 {
+  right: 26%;
+  background: conic-gradient(from 185deg at 50% 0%, transparent 0deg, rgba(245, 158, 11, 0.5) 12deg, transparent 24deg); /* taste-skill-ignore */
+  animation-duration: 10s;
+  animation-delay: -5s;
+}
+
+.spotlight-right-2 {
+  right: 8%;
+  background: conic-gradient(from 190deg at 50% 0%, transparent 0deg, rgba(37, 99, 235, 0.5) 14deg, transparent 28deg); /* taste-skill-ignore */
+  animation-duration: 13s;
+  animation-delay: -2s;
+}
+
+@keyframes sweepStageLight {
+  0% { transform: rotate(-15deg); }
+  100% { transform: rotate(15deg); }
+}
+
+/* Sàn sân khấu ánh sáng tươi sáng */
+.stage-floor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(180deg, transparent 0%, rgba(219, 234, 254, 0.4) 40%, rgba(191, 219, 254, 0.8) 100%); /* taste-skill-ignore */
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ==========================================================================
+   TOP BROADCAST HUD (TIÊU ĐỀ, ĐIỀU HƯỚNG VÒNG THI & CÔNG CỤ)
+   ========================================================================== */
+.stage-header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px;
+  background: #ffffff;
+  border-bottom: 2px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-laurel-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
+.brand-title-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  color: var(--blue-brand);
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.brand-subtitle {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #64748b;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.brand-tag {
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.72rem;
+  border: 1px solid #bfdbfe;
+}
+
+/* Thanh chỉ báo các vòng thi (Round Nav Bar) */
+.round-navbar {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 30px;
+  padding: 3px;
+  gap: 3px;
+}
+
+.round-step-btn {
+  background: transparent;
+  border: none;
+  color: #475569;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.18s ease, background-color 0.18s ease;
+  display: flex;
+  align-items: center;
+}
+
+.round-step-btn:hover {
+  color: #0f172a;
+  background: #e2e8f0;
+}
+
+.round-step-btn.active {
+  background: var(--gold-primary);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+/* Các nút điều khiển nhanh (Quick Controls) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-icon-round {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-icon-round:hover {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  color: #1e40af;
+  transform: translateY(-2px);
+}
+
+.btn-icon-round:active {
+  transform: translateY(1px);
+}
+
+/* ==========================================================================
+   MAIN ARENA (SÂN KHẤU TRUNG TÂM / MÀN HÌNH LED LỚN TƯƠI SÁNG)
+   ========================================================================== */
+.stage-main-arena {
+  position: relative;
+  z-index: 5;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Màn hình Studio Frame sáng sủa, thanh lịch */
+.studio-led-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.studio-led-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--team-1) 0%, var(--gold-primary) 33%, var(--team-2) 66%, var(--team-4) 100%); /* taste-skill-ignore */
+  z-index: 2;
+}
+
+/* Các view bên trong màn hình */
+.arena-view {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: none;
+  flex-direction: column;
+  padding: 12px 18px;
+  overflow-y: auto;
+}
+
+.arena-view::-webkit-scrollbar {
+  width: 6px;
+}
+
+.arena-view::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.arena-view::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.arena-view::-webkit-scrollbar-thumb:hover {
+  background: var(--blue-brand);
+}
+
+.arena-view.active {
+  display: flex;
+  animation: fadeInView 0.25s ease-out;
+}
+
+@keyframes fadeInView {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ==========================================================================
+   VIEW 0: WELCOME & START SCREEN (THÂN THIỆN, NĂNG ĐỘNG CHO TIỂU HỌC)
+   ========================================================================== */
+.welcome-screen {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  padding: 10px 14px;
+}
+
+.welcome-logo-wrap {
+  position: relative;
+}
+
+.welcome-laurel-badge {
+  width: 64px;
+  height: 64px;
+}
+
+.welcome-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--blue-brand);
+  margin-bottom: 2px;
+}
+
+.welcome-sub {
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  font-weight: 500;
+  max-width: 640px;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   PRE-GAME SETUP CONSOLE (BÀN ĐIỀU HÀNH TRƯỚC TRẬN ĐẤU)
+   ========================================================================== */
+.pregame-setup-card {
+  width: 100%;
+  max-width: 900px;
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 12px 18px;
+  margin: 4px 0 8px;
+  text-align: left;
+}
+
+.pregame-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid var(--border-subtle);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.pregame-badge {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--blue-brand);
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.pregame-hint {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+}
+
+.pregame-controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.pregame-control-col {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pregame-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.3px;
+}
+
+.pregame-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.pregame-select {
+  flex: 1;
+  padding: 7px 10px;
+  font-size: 0.88rem;
+  background: #ffffff;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+}
+
+.btn-pregame-action {
+  white-space: nowrap;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  color: var(--blue-brand);
+  padding: 7px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-pregame-action:hover {
+  background: #dbeafe;
+  border-color: var(--blue-brand);
+  color: #1e3a8a;
+}
+
+/* 4 Đội thi đấu trên Welcome card */
+.pregame-teams-section {
+  padding: 8px 10px;
+  background: #ffffff;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.pregame-teams-label {
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+}
+
+.pregame-teams-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.pregame-team-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  transition: border-color 0.15s ease;
+}
+
+.team-1-box { border-left: 4px solid var(--team-1); }
+.team-2-box { border-left: 4px solid var(--team-2); }
+.team-3-box { border-left: 4px solid var(--team-3); }
+.team-4-box { border-left: 4px solid var(--team-4); }
+
+.team-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.dot-1 { background: var(--team-1); }
+.dot-2 { background: var(--team-2); }
+.dot-3 { background: var(--team-3); }
+.dot-4 { background: var(--team-4); }
+
+.pregame-team-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.88rem;
+  font-weight: 700;
+  outline: none;
+  padding: 2px 0;
+}
+
+.pregame-team-input:focus {
+  color: var(--blue-brand);
+}
+
+.pregame-actions-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.welcome-rounds-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  max-width: 840px;
+  margin: 6px 0 10px;
+}
+
+.welcome-rounds-grid.compact-strip {
+  margin: 4px 0 0;
+  max-width: 900px;
+  gap: 8px;
+}
+
+.welcome-rounds-grid.compact-strip .round-info-card {
+  padding: 6px 8px;
+}
+
+.welcome-rounds-grid.compact-strip .card-num {
+  font-size: 0.68rem;
+}
+
+.welcome-rounds-grid.compact-strip .card-name {
+  font-size: 0.84rem;
+  margin: 1px 0;
+}
+
+.welcome-rounds-grid.compact-strip .card-rule {
+  font-size: 0.68rem;
+}
+
+.round-info-card {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  text-align: center;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.round-info-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--blue-brand);
+  background: #eff6ff;
+}
+
+.round-info-card .card-num {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--gold-deep);
+  letter-spacing: 0.5px;
+}
+
+.round-info-card .card-name {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 2px 0;
+}
+
+.round-info-card .card-rule {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  line-height: 1.3;
+}
+
+.btn-olympia-start {
+  background: var(--gold-primary);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 10px 34px;
+  border-radius: 30px;
+  border: none;
+  border-bottom: 3.5px solid var(--gold-deep);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.5px;
+}
+
+.btn-olympia-start:hover {
+  transform: translateY(-2px);
+  background: var(--gold-deep);
+}
+
+.btn-olympia-start:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+/* ==========================================================================
+   VIEW 1 & GENERAL QUESTION TOP BAR
+   ========================================================================== */
+.question-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.question-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badge-round-tag {
+  background: #eff6ff;
+  color: var(--blue-brand);
+  font-weight: 800;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border: 1.5px solid #bfdbfe;
+}
+
+.badge-current-team {
+  background: #ffffff;
+  color: var(--text-main);
+  font-weight: 800;
+  font-size: 0.92rem;
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border-light);
+}
+
+.badge-points {
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #fde68a;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Đồng hồ đếm ngược (Countdown Clock) */
+.countdown-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.countdown-circle {
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+
+.countdown-svg {
+  transform: rotate(-90deg);
+  width: 100%;
+  height: 100%;
+}
+
+.countdown-bg-ring {
+  fill: none;
+  stroke: #e2e8f0;
+  stroke-width: 5;
+}
+
+.countdown-progress-ring {
+  fill: none;
+  stroke: var(--gold-primary);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear, stroke 0.25s ease;
+}
+
+.countdown-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: var(--text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown-box.urgent .countdown-progress-ring {
+  stroke: var(--team-1);
+}
+
+.countdown-box.urgent .countdown-number {
+  color: var(--team-1);
+  animation: pulseUrgent 0.5s infinite alternate;
+}
+
+@keyframes pulseUrgent {
+  from { transform: translate(-50%, -50%) scale(1); }
+  to { transform: translate(-50%, -50%) scale(1.15); }
+}
+
+/* Nội dung câu hỏi lớn - Chữ to, tương phản cao chiếu rõ ban ngày */
+.question-display-area {
+  flex: 0 1 auto;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #f8fafc;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.question-text {
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  font-weight: 800;
+  line-height: 1.4;
+  color: var(--text-main);
+  text-align: center;
+}
+
+/* 4 Đáp án A B C D */
+.answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.answer-card {
+  background: #ffffff;
+  border: 2px solid var(--border-light);
+  border-bottom: 3.5px solid #94a3b8;
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.answer-card:hover:not(.disabled) {
+  background: #eff6ff;
+  border-color: var(--blue-brand);
+  border-bottom-color: #1e40af;
+  transform: translateY(-2px);
+}
+
+.answer-card:active:not(.disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+.answer-card .ans-letter {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  min-width: 28px;
+}
+
+.answer-card.correct {
+  background: #059669 !important;
+  border-color: #047857 !important;
+  border-bottom-color: #065f46 !important;
+  color: #ffffff !important;
+  animation: correctBounce 0.3s ease;
+}
+
+.answer-card.correct .ans-letter {
+  color: #ffffff !important;
+}
+
+.answer-card.wrong {
+  background: #dc2626 !important;
+  border-color: #b91c1c !important;
+  border-bottom-color: #991b1b !important;
+  color: #ffffff !important;
+}
+
+.answer-card.wrong .ans-letter {
+  color: #ffffff !important;
+}
+
+@keyframes correctBounce {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+/* ==========================================================================
+   BẢNG THEO DÕI TỐC ĐỘ VÒNG 3 (SPEED TRACKER & SCORING)
+   ========================================================================== */
+.speed-tracker-panel {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.speed-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid var(--border-subtle);
+  padding-bottom: 6px;
+}
+
+.speed-title-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--blue-brand);
+}
+
+.speed-dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--gold-primary);
+  display: inline-block;
+  box-shadow: 0 0 8px var(--gold-primary); /* taste-skill-ignore */
+}
+
+.speed-buzzers-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.speed-buzzer-btn {
+  background: #ffffff;
+  border: 2px solid var(--border-light);
+  border-bottom: 3.5px solid #94a3b8;
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+  color: var(--text-main);
+  text-align: left;
+}
+
+.speed-buzzer-btn:hover {
+  background: #eff6ff;
+  border-color: var(--blue-brand);
+  transform: translateY(-1px);
+}
+
+.speed-buzzer-btn:active {
+  transform: translateY(1px);
+  border-bottom-width: 1.5px;
+}
+
+.speed-buzzer-btn.buzzed {
+  background: #fef3c7;
+  border-color: var(--gold-primary);
+  border-bottom-color: var(--gold-deep);
+}
+
+.speed-buzzer-btn .buzzer-key-badge {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--team-color, var(--gold-primary));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.speed-buzzer-btn .buzzer-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.speed-buzzer-btn .buzzer-team-name {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.speed-buzzer-btn .buzzer-status {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.speed-buzzer-btn.buzzed .buzzer-status {
+  color: var(--gold-deep);
+  font-weight: 800;
+}
+
+.speed-ranking-container {
+  background: #f1f5f9;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.speed-empty-state {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  text-align: center;
+  padding: 4px 0;
+}
+
+.speed-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.speed-ranking-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid var(--border-light);
+  border-radius: 6px;
+  padding: 5px 10px;
+}
+
+.speed-rank-badge {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--gold-deep);
+  min-width: 28px;
+}
+
+.speed-team-pill {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 3px solid;
+  padding-left: 8px;
+}
+
+.speed-team-pill .pill-name {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.speed-team-pill .pill-time {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--blue-brand);
+  font-variant-numeric: tabular-nums;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.speed-grade-toggles {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-toggle-grade {
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  background: #f8fafc;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: background-color 0.1s ease, border-color 0.1s ease, color 0.1s ease;
+}
+
+.btn-toggle-grade.active-correct {
+  background: #059669;
+  border-color: #047857;
+  color: #ffffff;
+}
+
+.btn-toggle-grade.active-wrong {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+.speed-expected-pts {
+  min-width: 55px;
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.speed-expected-pts .pts-preview {
+  color: var(--gold-deep);
+}
+
+.speed-expected-pts .pts-final {
+  color: #059669;
+}
+
+.speed-submit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 6px;
+  border-top: 1.5px solid var(--border-subtle);
+}
+
+.btn-award-olympia {
+  background: var(--gold-primary);
+  border: none;
+  border-bottom: 3px solid var(--gold-deep);
+  color: #ffffff;
+  font-weight: 800;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.btn-award-fixed {
+  background: var(--blue-brand);
+  border: none;
+  border-bottom: 3px solid #1e40af;
+  color: #ffffff;
+  font-weight: 800;
+  padding: 5px 12px;
+  font-size: 0.82rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+/* Thanh điều khiển giáo viên & tương tác */
+.interactive-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-correct {
+  background: #059669;
+  border-bottom: 3px solid #047857;
+  color: #ffffff;
+}
+
+.btn-correct:hover {
+  background: #047857;
+  transform: translateY(-2px);
+}
+
+.btn-wrong {
+  background: #dc2626;
+  border-bottom: 3px solid #991b1b;
+  color: #ffffff;
+}
+
+.btn-wrong:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.btn-next, .btn-prev, .btn-reveal {
+  background: var(--blue-brand);
+  border-bottom: 3px solid #1e40af;
+  color: #ffffff;
+}
+
+.btn-next:hover, .btn-prev:hover, .btn-reveal:hover {
+  background: #1e40af;
+  transform: translateY(-2px);
+}
+
+.btn-action:active {
+  transform: translateY(2px);
+}
+
+.btn-star-hope {
+  background: var(--gold-primary);
+  border-bottom: 3px solid var(--gold-deep);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.btn-star-hope:hover {
+  background: var(--gold-deep);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   VIEW 2: VƯỢT CHƯỚNG NGẠI VẬT (OBSTACLE PUZZLE ARENA)
+   ========================================================================== */
+.obstacle-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 20px;
+  height: 100%;
+}
+
+.obstacle-image-container {
+  position: relative;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-light);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.obstacle-image-canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.4s ease;
+}
+
+/* Lưới 4 miếng ghép che hình bí ẩn */
+.puzzle-cover-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 6px;
+  background: #e2e8f0;
+  padding: 6px;
+}
+
+.puzzle-tile {
+  background: #eff6ff;
+  border: 2px solid #bfdbfe;
+  border-bottom: 3.5px solid #93c5fd;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--blue-brand);
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease, background-color 0.15s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.puzzle-tile:hover {
+  background: #dbeafe;
+  border-color: var(--blue-brand);
+}
+
+.puzzle-tile.revealed {
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+}
+
+.puzzle-tile-num {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--blue-brand);
+}
+
+.puzzle-tile-label {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-sub);
+  text-transform: uppercase;
+}
+
+/* Miếng ghép trung tâm */
+.puzzle-center-piece {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  background: var(--gold-primary);
+  border: 3px solid #fde68a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ffffff;
+  z-index: 5;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.puzzle-center-piece.revealed {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.96);
+}
+
+/* Phần hàng ngang bên phải */
+.obstacle-rows-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.keyword-hint-badge {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.keyword-letters-display {
+  display: flex;
+  gap: 5px;
+}
+
+.letter-cell {
+  width: 28px;
+  height: 34px;
+  background: #ffffff;
+  border: 1.5px solid var(--border-light);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--blue-brand);
+  font-size: 1.05rem;
+}
+
+.letter-cell.space {
+  background: transparent;
+  border-color: transparent;
+  width: 12px;
+}
+
+.rows-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row-item {
+  background: #ffffff;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.row-item:hover {
+  background: #eff6ff;
+  border-color: var(--blue-brand);
+}
+
+.row-item.active {
+  background: #eff6ff;
+  border-color: var(--blue-brand);
+}
+
+.row-item.solved {
+  background: #ecfdf5;
+  border-color: #059669;
+}
+
+.row-title {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.row-cells-preview {
+  display: flex;
+  gap: 3px;
+}
+
+.row-cell-tiny {
+  width: 22px;
+  height: 24px;
+  background: #f1f5f9;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+}
+
+.row-cell-tiny.revealed {
+  background: #059669;
+  border-color: #047857;
+  color: #ffffff;
+}
+
+/* Nút bấm chuông đoán Chướng ngại vật to rực rỡ */
+.btn-guess-obstacle {
+  background: var(--team-1);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  border: none;
+  border-bottom: 4px solid #991b1b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.5px;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-guess-obstacle:hover {
+  transform: translateY(-2px);
+  background: #b91c1c;
+}
+
+.btn-guess-obstacle:active {
+  transform: translateY(2px);
+  border-bottom-width: 2px;
+}
+
+/* ==========================================================================
+   BOTTOM STAGE: 4 TEAM PEDESTALS (BỤC THI ĐẤU 4 ĐỘI)
+   ========================================================================== */
+.stage-pedestals {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 4px 20px 8px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.team-pedestal {
+  position: relative;
+  background: #ffffff;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-top: 4px solid var(--team-color, #1d4ed8);
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05); /* taste-skill-ignore */
+}
+
+.team-pedestal:hover {
+  transform: translateY(-3px);
+  border-color: var(--blue-brand);
+}
+
+.team-pedestal.active-turn {
+  transform: translateY(-4px);
+  background: #eff6ff;
+  border-color: var(--blue-brand);
+}
+
+.team-pedestal.active-turn::after {
+  content: 'ĐANG THI ĐẤU';
+  position: absolute;
+  top: -16px;
+  background: var(--gold-primary);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 900;
+  padding: 2px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.5px;
+}
+
+.team-header-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.team-badge-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--team-color, #1d4ed8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.team-name {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-main);
+  text-align: center;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+}
+
+/* Màn hình LED hiển thị điểm trên bục */
+.pedestal-score-screen {
+  width: 100%;
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 4px 6px;
+  text-align: center;
+  position: relative;
+}
+
+.score-display-value {
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  line-height: 1.1;
+  font-weight: 900;
+  color: var(--blue-brand);
+  letter-spacing: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Nút bấm chuông và điều chỉnh điểm của giáo viên */
+.pedestal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 5px;
+  gap: 4px;
+}
+
+.btn-buzz-team {
+  flex: 1;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-bottom: 2.5px solid #93c5fd;
+  color: var(--blue-brand);
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-buzz-team:hover {
+  background: var(--team-color);
+  border-color: var(--team-color);
+  color: #ffffff;
+}
+
+.score-tweak-btns {
+  display: flex;
+  gap: 3px;
+}
+
+.btn-tweak {
+  width: 22px;
+  height: 22px;
+  background: #f1f5f9;
+  border: 1.5px solid var(--border-light);
+  color: var(--text-main);
+  border-radius: 4px;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-tweak:hover {
+  background: var(--gold-primary);
+  color: #ffffff;
+  border-color: var(--gold-deep);
+}
+
+/* Hiệu ứng bay điểm số (+10, +20, -10...) */
+.floating-score {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 900;
+  pointer-events: none;
+  z-index: 50;
+  animation: floatScoreUp 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+.floating-score.plus {
+  color: #059669;
+}
+
+.floating-score.minus {
+  color: var(--team-1);
+}
+
+@keyframes floatScoreUp {
+  0% { opacity: 0; transform: translate(-50%, 15px) scale(0.6); }
+  30% { opacity: 1; transform: translate(-50%, -10px) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -45px) scale(1); }
+}
+
+/* ==========================================================================
+   VIEW 5: FINAL PODIUM & VICTORY CELEBRATION
+   ========================================================================== */
+.finale-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.victory-title-wrap {
+  margin-bottom: 20px;
+}
+
+.podium-crown-badge {
+  display: inline-block;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1.5px solid #fde68a;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 5px 20px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.victory-headline {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 900;
+  color: var(--blue-brand);
+  letter-spacing: 1px;
+}
+
+.victory-sub {
+  font-size: 1.2rem;
+  color: var(--text-sub);
+}
+
+/* Bục nhận giải 1st, 2nd, 3rd, 4th */
+.podium-stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 10px;
+}
+
+.podium-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.podium-avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.podium-rank-tag {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+}
+
+.podium-rank-tag.gold {
+  color: var(--gold-deep);
+  font-size: 1.15rem;
+}
+
+.podium-team-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--text-main);
+  margin-top: 4px;
+}
+
+.podium-score-pill {
+  background: #eff6ff;
+  color: var(--blue-brand);
+  font-family: var(--font-display);
+  font-weight: 800;
+  padding: 4px 14px;
+  border-radius: 12px;
+  font-size: 1rem;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  border: 1.5px solid #bfdbfe;
+}
+
+.podium-block {
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.podium-1 {
+  height: 180px;
+  background: #d97706;
+  border-top: 4px solid #fde047;
+  order: 2;
+}
+
+.podium-2 {
+  height: 140px;
+  background: #64748b;
+  border-top: 4px solid #94a3b8;
+  order: 1;
+}
+
+.podium-3 {
+  height: 110px;
+  background: #b45309;
+  border-top: 4px solid #f59e0b;
+  order: 3;
+}
+
+.podium-4 {
+  height: 80px;
+  background: #94a3b8;
+  border-top: 4px solid #cbd5e1;
+  order: 4;
+}
+
+/* Canvas pháo hoa */
+#fireworks-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ==========================================================================
+   MODAL DIALOGS (BẢNG XẾP HẠNG & CÀI ĐẶT GIÁO VIÊN)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open {
+  display: flex;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-content {
+  background: #ffffff;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 900px;
+  max-height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.15); /* taste-skill-ignore */
+}
+
+.modal-header {
+  padding: 16px 24px;
+  background: #f8fafc;
+  border-bottom: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-close-modal {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.btn-close-modal:hover {
+  color: var(--text-main);
+}
+
+.modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Bảng xếp hạng trong modal */
+.leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+}
+
+.leaderboard-row.rank-1 {
+  background: #fef3c7;
+  border-left: 5px solid var(--gold-primary);
+  border-color: #fde68a;
+}
+
+.lb-rank {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  min-width: 80px;
+  color: var(--gold-deep);
+}
+
+.lb-team {
+  flex: 1;
+  font-weight: 800;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-main);
+}
+
+.lb-score {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tabs trong Modal Cài đặt giáo viên */
+.settings-tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 2px solid var(--border-subtle);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  background: #f1f5f9;
+  border: 1.5px solid var(--border-light);
+  color: var(--text-sub);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.tab-btn.active {
+  background: var(--blue-brand);
+  color: #ffffff;
+  border-color: #1e40af;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.form-input:focus, .form-textarea:focus, .form-select:focus {
+  border-color: var(--blue-brand);
+  background: #ffffff;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Event & Bank Studio in Settings Modal */
+.event-picker-bar, .bank-picker-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  flex-wrap: wrap;
+}
+
+.event-btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.teams-manager-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.team-manage-card {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.team-manage-card-1 { border-left: 4px solid var(--team-1); }
+.team-manage-card-2 { border-left: 4px solid var(--team-2); }
+.team-manage-card-3 { border-left: 4px solid var(--team-3); }
+.team-manage-card-4 { border-left: 4px solid var(--team-4); }
+
+.team-manage-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.team-1-color { color: var(--team-1); }
+.team-2-color { color: var(--team-2); }
+.team-3-color { color: var(--team-3); }
+.team-4-color { color: var(--team-4); }
+
+.modal-footer {
+  padding: 14px 24px;
+  background: #f8fafc;
+  border-top: 2px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   FIREBASE CLOUD STATUS BADGE & SETTINGS PANEL
+   ========================================================================== */
+.cloud-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  border: 1.5px solid var(--border-light);
+  border-radius: 20px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.cloud-status-badge:hover {
+  border-color: var(--blue-brand);
+  background: #eff6ff;
+}
+
+.cloud-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cloud-status-text {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.2px;
+}
+
+.dot-connected {
+  background: var(--team-4);
+}
+
+.dot-syncing {
+  background: var(--gold-primary);
+  animation: pulseDot 1s infinite alternate;
+}
+
+.dot-error {
+  background: var(--team-1);
+}
+
+.dot-unconfigured {
+  background: #64748b;
+}
+
+@keyframes pulseDot {
+  from { opacity: 0.4; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1.15); }
+}
+
+.firebase-panel-intro {
+  background: #f8fafc;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.firebase-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.cloud-banner-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.firebase-actions-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+
+.firebase-guide-box {
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin-top: 14px;
+}
+
+.guide-title {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.guide-steps {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  padding-left: 18px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.guide-steps li {
+  margin-bottom: 6px;
+}
+
+/* ==========================================================================
+   USER PROFILE PILL & LOGIN MODAL
+   ========================================================================== */
+.user-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 20px;
+  padding: 3px 8px 3px 4px;
+}
+
+.user-badge-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--blue-brand);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-role-label {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  background: #dbeafe;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid #bfdbfe;
+}
+
+.user-name-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.btn-logout-tiny {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: 4px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-logout-tiny:hover {
+  color: var(--team-1);
+  background: rgba(220, 38, 38, 0.1);
+}
+
+/* Hộp đăng nhập Studio */
+.modal-login-box {
+  max-width: 420px;
+  border: 2px solid var(--border-light);
+  background: #ffffff;
+}
+
+.login-header {
+  padding: 20px 24px 14px;
+  text-align: center;
+  border-bottom: 1.5px solid var(--border-subtle);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-laurel-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 6px;
+}
+
+.login-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--blue-brand);
+  letter-spacing: 0.5px;
+}
+
+.login-subtitle {
+  font-size: 0.76rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.login-form-body {
+  padding: 18px 24px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 12px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.input-with-icon .form-input {
+  padding-left: 38px;
+  width: 100%;
+}
+
+.login-error-text {
+  color: var(--team-1);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+.login-form-footer {
+  padding: 10px 24px 20px;
+}
+
+.btn-login-submit {
+  width: 100%;
+  justify-content: center;
+  background: var(--blue-brand);
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 800;
+  padding: 11px 20px;
+  border-radius: var(--radius-sm);
+  border-bottom: 3.5px solid #1e40af;
+  letter-spacing: 0.5px;
+}
+
+.btn-login-submit:hover {
+  background: #1e40af;
+}
+
+/* Toast thông báo */
+.toast-notice {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #ffffff;
+  border: 2px solid var(--blue-brand);
+  color: var(--text-main);
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  z-index: 200;
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.15); /* taste-skill-ignore */
+}
+
+.toast-notice.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN FOR CLASSROOM PROJECTORS & SCREENS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .stage-pedestals {
+    gap: 10px;
+    padding: 8px 16px;
+  }
+  .brand-title {
+    font-size: 1.25rem;
+  }
+  .question-text {
+    font-size: 1.3rem;
+  }
+  .score-display-value {
+    font-size: 1.8rem;
+  }
+  .welcome-heading {
+    font-size: 2.1rem;
+  }
+  .welcome-rounds-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  html, body {
+    overflow-y: auto;
+  }
+  .olympia-stage {
+    height: auto;
+    min-height: 100dvh;
+  }
+  .stage-header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+  .round-navbar {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  .stage-pedestals {
+    grid-template-columns: 1fr 1fr;
+  }
+  .answers-grid {
+    grid-template-columns: 1fr;
+  }
+  .obstacle-layout {
+    grid-template-columns: 1fr;
+  }
+}
