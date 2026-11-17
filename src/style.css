@@ -3878,3 +3878,39 @@ kbd {
     flex: 1 1 0;
   }
 }
+
+/* ==========================================================================
+   TRANG CHỦ & TRAO GIẢI: không có "lượt thi" nên ẩn nhãn ĐANG THI ĐẤU
+   ========================================================================== */
+body[data-round="0"] .team-pedestal.active-turn,
+body[data-round="5"] .team-pedestal.active-turn {
+  transform: none;
+  background: #ffffff;
+  border-color: var(--border-light);
+  border-top-color: var(--team-color, #1d4ed8);
+}
+
+body[data-round="0"] .team-pedestal.active-turn::after,
+body[data-round="5"] .team-pedestal.active-turn::after {
+  display: none;
+}
+
+/* Bảng xếp hạng: nhãn "Đồng hạng 1" cần rộng hơn "Hạng 1" */
+.lb-rank {
+  min-width: 118px;
+}
+
+.leaderboard-row.rank-0 .lb-rank {
+  color: var(--text-dim);
+}
+
+@media (max-width: 480px) {
+  .lb-rank {
+    min-width: 0;
+    font-size: 0.9rem;
+  }
+  .leaderboard-row {
+    gap: 8px;
+    padding: 12px 14px;
+  }
+}

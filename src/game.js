@@ -753,6 +753,7 @@ export class OlympiaGame {
       setTimeout(() => scoreEl.classList.remove("score-pop"), 300);
     }
     questionManager.saveData(this.data);
+    if (this.currentRound === 5) this.renderPodium();
   }
 
   spawnFloatingScore(teamId, delta) {
@@ -843,6 +844,7 @@ export class OlympiaGame {
     this.stopTimer();
     this.stopFireworks();
     this.currentRound = roundNum;
+    document.body.dataset.round = String(roundNum);
 
     this.navStepBtns.forEach((btn) => {
       const r = parseInt(btn.dataset.round, 10);
@@ -1650,30 +1652,87 @@ export class OlympiaGame {
   // =========================================================================
   // VIEW 5: CHUNG KẾT & TRAO GIẢI
   // =========================================================================
+  /**
+   * Xếp hạng kiểu thi đấu: bằng điểm thì đồng hạng (vd. 1, 1, 3, 4).
+   * Trả về [{ team, rank, tied }] theo thứ tự điểm giảm dần.
+   */
+  rankTeams(teams = this.data.teams) {
+    const sorted = [...teams].sort((a, b) => b.score - a.score || a.id - b.id);
+    return sorted.map((team) => {
+      const sameScore = sorted.filter((t) => t.score === team.score);
+      return {
+        team,
+        rank: sorted.findIndex((t) => t.score === team.score) + 1,
+        tied: sameScore.length > 1
+      };
+    });
+  }
+
   renderFinale() {
-    soundEngine.playVictory();
-    this.startFireworks();
-
-    const sortedTeams = [...this.data.teams].sort((a, b) => b.score - a.score);
-    const champion = sortedTeams[0];
-
-    const champTitle = document.getElementById("finale-winner-name");
-    if (champTitle) {
-      champTitle.innerText = `CHÚC MỪNG NHÀ VÔ ĐỊCH: ${champion.name.toUpperCase()} (${champion.score} ĐIỂM)!`;
+    const nobodyScored = this.data.teams.every((t) => t.score <= 0);
+    if (!nobodyScored) {
+      soundEngine.playVictory();
+      this.startFireworks();
     }
+    this.renderPodium();
+  }
 
-    const podiumMap = {
-      1: { elId: "podium-1", rank: 1, team: sortedTeams[0] },
-      2: { elId: "podium-2", rank: 2, team: sortedTeams[1] },
-      3: { elId: "podium-3", rank: 3, team: sortedTeams[2] },
-      4: { elId: "podium-4", rank: 4, team: sortedTeams[3] }
-    };
+  renderPodium() {
+    const ranked = this.rankTeams();
+    const nobodyScored = ranked.every((r) => r.team.score <= 0);
+    const champions = ranked.filter((r) => r.rank === 1);
 
-    Object.values(podiumMap).forEach((p) => {
-      const col = document.getElementById(p.elId);
-      if (col && p.team) {
-        col.querySelector(".podium-team-name").innerText = p.team.name;
-        col.querySelector(".podium-score-pill").innerText = `${p.team.score} ĐIỂM`;
+    const badgeEl = document.querySelector("#view-finale .podium-crown-badge");
+    const champTitle = document.getElementById("finale-winner-name");
+    const subEl = document.querySelector("#view-finale .victory-sub");
+
+    const joinNames = (names) =>
+      names.length <= 1 ? names.join("") : `${names.slice(0, -1).join(", ")} & ${names[names.length - 1]}`;
+
+    let badge, headline, sub;
+    if (nobodyScored) {
+      badge = "KẾT QUẢ";
+      headline = "TRẬN ĐẤU ĐÃ KẾT THÚC";
+      sub = "Chưa có đội nào ghi điểm trong trận này. Hẹn gặp lại các nhà leo núi nhí ở trận sau!";
+    } else if (champions.length > 1) {
+      badge = "ĐỒNG VÔ ĐỊCH";
+      headline = `ĐỒNG VÔ ĐỊCH: ${joinNames(champions.map((c) => c.team.name.toUpperCase()))} (${champions[0].team.score} ĐIỂM)!`;
+      sub = "Các đội bằng điểm nhau ở vị trí cao nhất – cùng chia sẻ vinh quang đỉnh Olympia!";
+    } else {
+      badge = "VÔ ĐỊCH";
+      headline = `CHÚC MỪNG NHÀ VÔ ĐỊCH: ${champions[0].team.name.toUpperCase()} (${champions[0].team.score} ĐIỂM)!`;
+      sub = "Vinh quang đỉnh núi tri thức Olympia thuộc về những nhà leo núi xuất sắc nhất!";
+    }
+    if (badgeEl) badgeEl.innerText = badge;
+    if (champTitle) champTitle.innerText = headline;
+    if (subEl) subEl.innerText = sub;
+
+    // 4 cột bục theo vị trí (giữa, trái, phải, ngoài cùng); chiều cao & màu theo HẠNG thật
+    ["podium-1", "podium-2", "podium-3", "podium-4"].forEach((elId, idx) => {
+      const col = document.getElementById(elId);
+      const entry = ranked[idx];
+      if (!col || !entry) return;
+
+      const tagEl = col.querySelector(".podium-rank-tag");
+      const blockEl = col.querySelector(".podium-block");
+      const visualRank = nobodyScored ? 4 : entry.rank;
+
+      col.querySelector(".podium-team-name").innerText = entry.team.name;
+      col.querySelector(".podium-score-pill").innerText = `${entry.team.score} ĐIỂM`;
+
+      if (tagEl) {
+        if (nobodyScored) {
+          tagEl.innerText = "Chưa ghi điểm";
+        } else if (entry.rank === 1) {
+          tagEl.innerText = entry.tied ? "Đồng Quán Quân" : "Quán Quân";
+        } else {
+          tagEl.innerText = entry.tied ? `Đồng hạng ${entry.rank}` : `Hạng ${entry.rank}`;
+        }
+        tagEl.classList.toggle("gold", !nobodyScored && entry.rank === 1);
+      }
+      if (blockEl) {
+        blockEl.className = `podium-block podium-${visualRank}`;
+        blockEl.innerText = nobodyScored ? "–" : entry.rank;
       }
     });
   }
@@ -1770,14 +1829,11 @@ export class OlympiaGame {
     if (!list) return;
 
     list.innerHTML = "";
-    const sorted = [...this.data.teams].sort((a, b) => b.score - a.score);
-
-    const ranks = ["Hạng 1", "Hạng 2", "Hạng 3", "Hạng 4"];
-    sorted.forEach((team, idx) => {
+    this.rankTeams().forEach(({ team, rank, tied }) => {
       const row = document.createElement("div");
-      row.className = `leaderboard-row rank-${idx + 1}`;
+      row.className = `leaderboard-row rank-${team.score > 0 ? rank : 0}`;
       row.innerHTML = `
-        <div class="lb-rank">${ranks[idx]}</div>
+        <div class="lb-rank">${tied ? "Đồng hạng" : "Hạng"} ${rank}</div>
         <div class="lb-team" style="color: ${team.color}">
           <span class="team-badge-avatar" style="background:${team.color}">${team.id}</span>
           <span>${team.name}</span>
