@@ -3191,11 +3191,11 @@ body.presenter-mode .speed-actions,
 body.presenter-mode #user-profile-badge,
 body.presenter-mode #cloud-status-badge,
 body.presenter-mode .header-actions > .btn-icon-round:not(#btn-presenter),
-body.presenter-mode .r4-pack-bar > :not(.is-active) {
+body.presenter-mode .r4-pack-bar > :not(#btn-r4-star.is-active) {
   display: none !important;
 }
 
-body.presenter-mode .r4-pack-bar:not(:has(.is-active)) {
+body.presenter-mode .r4-pack-bar:not(:has(#btn-r4-star.is-active)) {
   display: none;
 }
 
@@ -3913,4 +3913,45 @@ body[data-round="5"] .team-pedestal.active-turn::after {
     gap: 8px;
     padding: 12px 14px;
   }
+}
+
+/* ==========================================================================
+   THỨ BẬC NÚT BẤM
+   Màu đặc chỉ dành cho thao tác chính: Đúng (xanh lá), Sai (đỏ), Câu tiếp (xanh).
+   Nút phụ (Hiện đáp án, Quay lại, Tạm dừng, Đóng, Nhân bản...) nền trắng viền xanh.
+   ========================================================================== */
+.btn-prev,
+.btn-reveal {
+  background: #ffffff;
+  color: var(--blue-brand);
+  border: 1.5px solid #bfdbfe;
+  border-bottom: 3px solid #93c5fd;
+}
+
+.btn-prev:hover,
+.btn-reveal:hover {
+  background: #eff6ff;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+/* Vòng 4: nút chọn gói – gói đang chọn tô vàng */
+.btn-pack {
+  background: #ffffff;
+  color: var(--text-sub);
+  border: 1.5px solid var(--border-light);
+  border-bottom: 3px solid var(--border-light);
+}
+
+.btn-pack:hover {
+  border-color: var(--gold-primary);
+  color: var(--text-main);
+  transform: translateY(-2px);
+}
+
+.btn-pack.is-active {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #f59e0b;
+  border-bottom-color: var(--gold-deep);
 }

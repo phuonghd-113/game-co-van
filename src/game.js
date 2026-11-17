@@ -493,7 +493,7 @@ export class OlympiaGame {
       title,
       message,
       tone,
-      actions: [{ label: "Đã hiểu", value: true, variant: "reveal", primary: true }]
+      actions: [{ label: "Đã hiểu", value: true, variant: "next", primary: true }]
     });
   }
 
@@ -1486,6 +1486,7 @@ export class OlympiaGame {
   // VÒNG 4: VỀ ĐÍCH
   // =========================================================================
   renderRound4() {
+    this.updatePackButtons();
     const currentTeam = this.data.teams.find((t) => t.id === this.currentTeamTurn);
     if (this.r4TeamBadge) {
       this.r4TeamBadge.innerText = `ĐỘI THI: ${currentTeam.name.toUpperCase()}`;
@@ -1537,6 +1538,14 @@ export class OlympiaGame {
       this.showToast("Đã hủy Ngôi sao hy vọng");
     }
     this.updateStarButton();
+  }
+
+  updatePackButtons() {
+    document.querySelectorAll(".btn-pack").forEach((btn) => {
+      const active = parseInt(btn.dataset.pack, 10) === this.selectedPackPoints;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
   }
 
   updateStarButton() {

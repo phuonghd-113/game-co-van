@@ -204,7 +204,7 @@
               <button class="btn-olympia-start" id="btn-start-game">
                 <span>BẮT ĐẦU TRẬN ĐẤU</span>
               </button>
-              <button type="button" class="btn-action btn-next" id="btn-open-guide-welcome">
+              <button type="button" class="btn-action btn-reveal" id="btn-open-guide-welcome">
                 📖 Hướng dẫn sử dụng
               </button>
               <button type="button" class="btn-action btn-reveal" onclick="window.game.openSettings('event')">
@@ -437,9 +437,9 @@
           <!-- Nút chọn gói câu hỏi 20, 30, 40 điểm -->
           <div class="r4-pack-bar">
             <span class="r4-pack-label">Chọn gói câu hỏi:</span>
-            <button class="btn-action btn-next" onclick="window.game.r4SelectPack(20)">Gói 20 Điểm</button>
-            <button class="btn-action btn-next" onclick="window.game.r4SelectPack(30)">Gói 30 Điểm</button>
-            <button class="btn-action btn-next" onclick="window.game.r4SelectPack(40)">Gói 40 Điểm</button>
+            <button class="btn-action btn-pack" data-pack="20" aria-pressed="false" onclick="window.game.r4SelectPack(20)">Gói 20 Điểm</button>
+            <button class="btn-action btn-pack" data-pack="30" aria-pressed="false" onclick="window.game.r4SelectPack(30)">Gói 30 Điểm</button>
+            <button class="btn-action btn-pack" data-pack="40" aria-pressed="false" onclick="window.game.r4SelectPack(40)">Gói 40 Điểm</button>
             <button class="btn-action btn-star-hope" id="btn-r4-star" onclick="window.game.toggleStarOfHope()">Đặt Ngôi Sao Hy Vọng</button>
           </div>
 
@@ -550,7 +550,7 @@
         <div class="leaderboard-list" id="leaderboard-content-list"></div>
       </div>
       <div class="modal-footer" style="justify-content: flex-end;">
-        <button class="btn-action btn-next" onclick="window.game.closeModals()">Đóng</button>
+        <button class="btn-action btn-reveal" onclick="window.game.closeModals()">Đóng</button>
       </div>
     </div>
   </div>
