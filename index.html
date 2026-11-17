@@ -1344,6 +1344,23 @@
     </div>
   </div>
 
+  <!-- ======================================================================
+       MODAL 6: HỘP THOẠI XÁC NHẬN / NHẬP LIỆU (thay alert, confirm, prompt
+       của trình duyệt – không làm thoát chế độ toàn màn hình)
+       ====================================================================== -->
+  <div class="modal-overlay dialog-overlay" id="modal-dialog" data-ui>
+    <div class="modal-content dialog-box" role="dialog" aria-modal="true" aria-labelledby="dialog-title" aria-describedby="dialog-message">
+      <div class="dialog-body">
+        <div class="dialog-icon" id="dialog-icon" aria-hidden="true"></div>
+        <h3 class="dialog-title" id="dialog-title"></h3>
+        <p class="dialog-message" id="dialog-message"></p>
+        <label class="form-label dialog-input-label" id="dialog-input-label" for="dialog-input"></label>
+        <input type="text" class="form-input dialog-input" id="dialog-input" autocomplete="off">
+      </div>
+      <div class="dialog-actions" id="dialog-actions"></div>
+    </div>
+  </div>
+
   <div class="presenter-hint" id="presenter-hint" aria-hidden="true">
     <span class="presenter-hint-dot"></span>
     Chế độ trình chiếu · <kbd>P</kbd> thoát · <kbd>?</kbd> phím tắt

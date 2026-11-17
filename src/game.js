@@ -281,6 +281,7 @@ export class OlympiaGame {
     try { savedPresenter = localStorage.getItem("olympia_presenter_mode") === "true"; } catch (err) {}
     if (savedPresenter) this.setPresenterMode(true, { silent: true });
 
+    this.initDialog();
     window.addEventListener("keydown", (e) => this.handleShortcutKey(e));
   }
 
@@ -314,6 +315,213 @@ export class OlympiaGame {
     this.presenterHintTimer = setTimeout(() => {
       this.presenterHintEl.classList.remove("visible");
     }, 2500);
+  }
+
+  // =========================================================================
+  // HỘP THOẠI TÙY CHỈNH (thay cho alert / confirm / prompt của trình duyệt)
+  // =========================================================================
+  /**
+   * Mở hộp thoại và trả về Promise với `value` của nút được bấm, hoặc null nếu hủy
+   * (Esc, bấm nền tối, hoặc mở hộp thoại khác đè lên).
+   * actions: [{ label, value, variant: 'correct'|'wrong'|'reveal'|'ghost', primary, keys: ['Enter'] }]
+   * input:   { label, value, placeholder } → khi có, nút primary trả về chuỗi đã nhập.
+   * safeDefault: thao tác nguy hiểm → focus sẵn nút Hủy và Enter KHÔNG tự xác nhận.
+   */
+  openDialog({ title, message = "", tone = "info", input = null, actions = [], safeDefault = false }) {
+    const overlay = document.getElementById("modal-dialog");
+    if (!overlay) return Promise.resolve(null);
+
+    // Đóng hộp thoại đang mở (nếu có) trước khi mở hộp thoại mới
+    if (this.dialogResolve) this.finishDialog(null);
+
+    const titleEl = document.getElementById("dialog-title");
+    const messageEl = document.getElementById("dialog-message");
+    const iconEl = document.getElementById("dialog-icon");
+    const inputEl = document.getElementById("dialog-input");
+    const inputLabelEl = document.getElementById("dialog-input-label");
+    const actionsEl = document.getElementById("dialog-actions");
+
+    const icons = {
+      info: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>',
+      danger: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+      edit: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>',
+      buzzer: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>'
+    };
+
+    overlay.dataset.tone = tone;
+    iconEl.innerHTML = icons[tone] || icons.info;
+    titleEl.textContent = title;
+    messageEl.textContent = message;
+    messageEl.style.display = message ? "" : "none";
+
+    inputEl.style.display = input ? "" : "none";
+    inputLabelEl.style.display = input && input.label ? "" : "none";
+    if (input) {
+      inputLabelEl.textContent = input.label || "";
+      inputEl.value = input.value || "";
+      inputEl.placeholder = input.placeholder || "";
+    }
+
+    actionsEl.innerHTML = "";
+    const buttons = actions.map((action) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `btn-action btn-${action.variant || "reveal"}${action.primary ? " is-primary" : ""}`;
+      btn.textContent = action.label;
+      if (action.keys && action.keys.length) {
+        const hint = document.createElement("kbd");
+        hint.textContent = action.keys[0] === "Backspace" ? "⌫" : action.keys[0] === "Enter" ? "↵" : action.keys[0];
+        btn.appendChild(hint);
+      }
+      btn.addEventListener("click", () => {
+        if (input && action.primary) {
+          const val = inputEl.value.trim();
+          if (!val) {
+            inputEl.focus();
+            inputEl.classList.add("is-invalid");
+            return;
+          }
+          this.finishDialog(val);
+        } else {
+          this.finishDialog(action.value);
+        }
+      });
+      actionsEl.appendChild(btn);
+      return { btn, action };
+    });
+
+    // Nút primary bị vô hiệu khi ô nhập trống
+    const primary = buttons.find((b) => b.action.primary);
+    if (input && primary) {
+      const sync = () => {
+        primary.btn.disabled = !inputEl.value.trim();
+        if (inputEl.value.trim()) inputEl.classList.remove("is-invalid");
+      };
+      inputEl.oninput = sync;
+      sync();
+    } else {
+      inputEl.oninput = null;
+    }
+
+    this.dialogKeyMap = {};
+    buttons.forEach(({ btn, action }) => {
+      (action.keys || []).forEach((k) => { this.dialogKeyMap[k] = btn; });
+    });
+    if (primary && !safeDefault && !this.dialogKeyMap.Enter) this.dialogKeyMap.Enter = primary.btn;
+    const cancelBtn = buttons.find((b) => b.action.variant === "ghost");
+
+    this.dialogReturnFocus = document.activeElement;
+    overlay.classList.add("open");
+
+    requestAnimationFrame(() => {
+      if (input) {
+        inputEl.focus();
+        inputEl.select();
+      } else if (safeDefault && cancelBtn) {
+        cancelBtn.btn.focus();
+      } else if (primary) {
+        primary.btn.focus();
+      } else if (buttons[0]) {
+        buttons[0].btn.focus();
+      }
+    });
+
+    return new Promise((resolve) => {
+      this.dialogResolve = resolve;
+    });
+  }
+
+  finishDialog(value) {
+    const overlay = document.getElementById("modal-dialog");
+    if (overlay) overlay.classList.remove("open");
+    const resolve = this.dialogResolve;
+    this.dialogResolve = null;
+    this.dialogKeyMap = {};
+    const returnTo = this.dialogReturnFocus;
+    this.dialogReturnFocus = null;
+    if (returnTo && typeof returnTo.focus === "function" && document.contains(returnTo)) {
+      returnTo.focus({ preventScroll: true });
+    }
+    if (resolve) resolve(value);
+  }
+
+  initDialog() {
+    const overlay = document.getElementById("modal-dialog");
+    if (!overlay) return;
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) this.finishDialog(null);
+    });
+
+    // Phím trong hộp thoại không lọt ra bộ phím tắt trận đấu
+    overlay.addEventListener("keydown", (e) => {
+      e.stopPropagation();
+      if (e.key === "Escape") {
+        e.preventDefault();
+        this.finishDialog(null);
+        return;
+      }
+      if (e.key === "Tab") {
+        const focusables = [...overlay.querySelectorAll("input:not([style*='display: none']), button:not(:disabled)")]
+          .filter((el) => el.offsetParent !== null);
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      const isTyping = document.activeElement && document.activeElement.tagName === "INPUT";
+      // Enter trên một nút đang focus: để trình duyệt tự bấm nút đó
+      if (e.key === "Enter" && document.activeElement && document.activeElement.tagName === "BUTTON") return;
+      if (isTyping && e.key !== "Enter") return;
+      const target = this.dialogKeyMap && this.dialogKeyMap[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+      if (target && !target.disabled) {
+        e.preventDefault();
+        target.click();
+      }
+    });
+  }
+
+  showAlert(title, message = "", tone = "danger") {
+    return this.openDialog({
+      title,
+      message,
+      tone,
+      actions: [{ label: "Đã hiểu", value: true, variant: "reveal", primary: true }]
+    });
+  }
+
+  async confirmDialog({ title, message = "", confirmText = "Đồng ý", cancelText = "Hủy", danger = false }) {
+    const res = await this.openDialog({
+      title,
+      message,
+      tone: danger ? "danger" : "info",
+      safeDefault: danger,
+      actions: [
+        { label: cancelText, value: false, variant: "ghost" },
+        { label: confirmText, value: true, variant: danger ? "wrong" : "correct", primary: true }
+      ]
+    });
+    return res === true;
+  }
+
+  promptDialog({ title, message = "", label = "", value = "", placeholder = "", confirmText = "Lưu" }) {
+    return this.openDialog({
+      title,
+      message,
+      tone: "edit",
+      input: { label, value, placeholder },
+      actions: [
+        { label: "Hủy", value: null, variant: "ghost" },
+        { label: confirmText, value: true, variant: "correct", primary: true }
+      ]
+    });
   }
 
   openShortcuts() {
@@ -902,14 +1110,27 @@ export class OlympiaGame {
     this.renderRound2();
   }
 
-  triggerObstacleBuzzer() {
+  async triggerObstacleBuzzer() {
+    if (this.obstacleSolved) {
+      this.showToast("Chướng ngại vật đã được giải!");
+      return;
+    }
     soundEngine.playBuzzer();
     const team = this.data.teams.find((t) => t.id === this.currentTeamTurn);
-    const confirmed = confirm(
-      `Đội [${team.name}] bấm chuông trả lời CHƯỚNG NGẠI VẬT?\n\n- Đúng: Được 40 ĐIỂM và mở toàn bộ bức tranh!\n- Thầy/cô nhấn OK nếu đội trả lời ĐÚNG, Cancel nếu SAI!`
-    );
+    const result = await this.openDialog({
+      title: `${team.name} bấm chuông đoán từ khóa!`,
+      message: "Mời đội trả lời từ khóa Chướng ngại vật.\nĐúng: +40 điểm và mở toàn bộ bức tranh.\n\n(Đổi đội bấm chuông: đóng hộp thoại, chọn bục đội hoặc phím 1–4 rồi bấm lại.)",
+      tone: "buzzer",
+      actions: [
+        { label: "Hủy", value: null, variant: "ghost" },
+        { label: "SAI", value: "wrong", variant: "wrong", keys: ["Backspace"] },
+        { label: "ĐÚNG +40", value: "correct", variant: "correct", primary: true, keys: ["Enter"] }
+      ]
+    });
 
-    if (confirmed) {
+    if (result === null) return;
+
+    if (result === "correct") {
       this.obstacleSolved = true;
       this.revealedTiles = [true, true, true, true];
       this.solvedRows = [true, true, true, true];
@@ -1594,6 +1815,9 @@ export class OlympiaGame {
     if (this.modalShortcuts) {
       this.modalShortcuts.classList.remove("open");
     }
+    if (this.dialogResolve) {
+      this.finishDialog(null);
+    }
     if (this.isAuthenticated() && this.modalLogin) {
       this.modalLogin.classList.remove("open");
     }
@@ -1867,7 +2091,7 @@ export class OlympiaGame {
     if (res.success) {
       this.showToast("Kết nối Google Firebase thành công!");
     } else {
-      alert("Không thể kết nối Firebase: " + res.error);
+      this.showAlert("Không thể kết nối Firebase", res.error);
     }
   }
 
@@ -1884,17 +2108,22 @@ export class OlympiaGame {
     if (res.success) {
       this.showToast("Đã lưu cấu hình và đẩy toàn bộ đề thi lên Đám mây!");
     } else {
-      alert("Lỗi khi đẩy lên Đám mây: " + res.error);
+      this.showAlert("Lỗi khi đẩy lên Đám mây", res.error);
     }
   }
 
   async pullFromFirebase() {
     if (!firebaseSync.isConfigured()) {
-      alert("Vui lòng nhập Database URL của Firebase trước khi tải!");
+      this.showAlert("Chưa có Database URL", "Vui lòng nhập Database URL của Firebase trước khi tải dữ liệu về.", "info");
       return;
     }
 
-    if (confirm("Tải dữ liệu mới nhất từ Firebase về máy? (Dữ liệu trên máy sẽ được cập nhật)")) {
+    const okPull = await this.confirmDialog({
+      title: "Tải dữ liệu từ Đám mây?",
+      message: "Dữ liệu sự kiện và bộ đề trên máy này sẽ được thay bằng bản mới nhất trên Firebase.",
+      confirmText: "Tải về"
+    });
+    if (okPull) {
       const res = await firebaseSync.pullWorkspaceFromCloud();
       if (res.success && res.data) {
         questionManager.importJSON(JSON.stringify(res.data));
@@ -1907,7 +2136,7 @@ export class OlympiaGame {
         this.populateSettingsData();
         this.showToast("Đã tải dữ liệu thành công từ Firebase Đám mây!");
       } else {
-        alert("Lỗi tải từ Firebase: " + res.error);
+        this.showAlert("Lỗi tải từ Firebase", res.error);
       }
     }
   }
@@ -1923,8 +2152,13 @@ export class OlympiaGame {
     this.populateSettingsData();
   }
 
-  handleCreateNewEvent() {
-    const title = prompt("Nhập tên Sự kiện / Trận đấu mới:", "Hội thi Olympia Tuần mới");
+  async handleCreateNewEvent() {
+    const title = await this.promptDialog({
+      title: "Tạo sự kiện mới",
+      label: "Tên sự kiện / trận đấu",
+      value: "Hội thi Olympia Tuần mới",
+      confirmText: "Tạo sự kiện"
+    });
     if (!title || !title.trim()) return;
 
     const newEvt = questionManager.createEvent({
@@ -1943,12 +2177,17 @@ export class OlympiaGame {
     this.showToast(`Đã tạo sự kiện mới: ${newEvt.title}`);
   }
 
-  handleDuplicateEvent() {
+  async handleDuplicateEvent() {
     const currentEvtId = this.selectedSettingsEventId || questionManager.state.activeEventId;
     const currentEvt = questionManager.state.events.find(e => e.id === currentEvtId);
     if (!currentEvt) return;
 
-    const newTitle = prompt("Nhập tên cho sự kiện nhân bản:", `${currentEvt.title} (Bản sao)`);
+    const newTitle = await this.promptDialog({
+      title: "Nhân bản sự kiện",
+      label: "Tên sự kiện mới",
+      value: `${currentEvt.title} (Bản sao)`,
+      confirmText: "Nhân bản"
+    });
     if (!newTitle || !newTitle.trim()) return;
 
     const cloned = questionManager.createEvent({
@@ -1968,17 +2207,23 @@ export class OlympiaGame {
     this.showToast(`Đã nhân bản sự kiện: ${cloned.title}`);
   }
 
-  handleDeleteEvent() {
+  async handleDeleteEvent() {
     const currentEvtId = this.selectedSettingsEventId || questionManager.state.activeEventId;
     const currentEvt = questionManager.state.events.find(e => e.id === currentEvtId);
     if (!currentEvt) return;
 
     if (questionManager.state.events.length <= 1) {
-      alert("Không thể xóa sự kiện duy nhất còn lại trong hệ thống!");
+      this.showAlert("Không thể xóa", "Đây là sự kiện duy nhất còn lại. Hãy tạo thêm một sự kiện khác trước khi xóa.", "info");
       return;
     }
 
-    if (confirm(`Bạn có chắc chắn muốn xóa sự kiện "${currentEvt.title}" không?`)) {
+    const okDelete = await this.confirmDialog({
+      title: "Xóa sự kiện?",
+      message: `Sự kiện "${currentEvt.title}" cùng tên đội và điểm số sẽ bị xóa vĩnh viễn. Bộ đề thi vẫn được giữ lại.`,
+      confirmText: "Xóa sự kiện",
+      danger: true
+    });
+    if (okDelete) {
       questionManager.deleteEvent(currentEvtId);
       this.selectedSettingsEventId = questionManager.state.activeEventId;
       this.data = questionManager.data;
@@ -2001,8 +2246,14 @@ export class OlympiaGame {
     this.renderVisualQuestionEditor();
   }
 
-  handleCreateNewBank() {
-    const title = prompt("Nhập tên Bộ đề thi mới:", "Bộ đề thi Olympia Mới");
+  async handleCreateNewBank() {
+    const title = await this.promptDialog({
+      title: "Tạo bộ đề mới",
+      message: "Bộ đề mới được tạo từ bản sao của bộ đề đang chọn để thầy cô sửa tiếp.",
+      label: "Tên bộ đề thi",
+      value: "Bộ đề thi Olympia Mới",
+      confirmText: "Tạo bộ đề"
+    });
     if (!title || !title.trim()) return;
 
     const baseBankId = this.selectedSettingsBankId || "bank_tong_hop";
@@ -2020,12 +2271,17 @@ export class OlympiaGame {
     this.showToast(`Đã tạo bộ đề mới: ${newBank.title}`);
   }
 
-  handleDuplicateBank() {
+  async handleDuplicateBank() {
     const currentBankId = this.selectedSettingsBankId || "bank_tong_hop";
     const currentBank = questionManager.getQuestionBank(currentBankId);
     if (!currentBank) return;
 
-    const newTitle = prompt("Nhập tên cho bộ đề nhân bản:", `${currentBank.title} (Bản sao)`);
+    const newTitle = await this.promptDialog({
+      title: "Nhân bản bộ đề",
+      label: "Tên bộ đề mới",
+      value: `${currentBank.title} (Bản sao)`,
+      confirmText: "Nhân bản"
+    });
     if (!newTitle || !newTitle.trim()) return;
 
     const clonedBank = questionManager.createQuestionBank({
@@ -2055,8 +2311,14 @@ export class OlympiaGame {
     this.setupPregameConsole();
   }
 
-  resetTeamScores() {
-    if (confirm("Đặt lại điểm số của cả 4 đội về 0 điểm?")) {
+  async resetTeamScores() {
+    const okReset = await this.confirmDialog({
+      title: "Đặt lại điểm 4 đội?",
+      message: "Điểm số của cả 4 đội trong sự kiện này sẽ về 0.",
+      confirmText: "Đặt lại điểm",
+      danger: true
+    });
+    if (okReset) {
       const currentEvtId = this.selectedSettingsEventId || questionManager.state.activeEventId;
       const currentEvt = questionManager.state.events.find(e => e.id === currentEvtId);
       if (currentEvt && currentEvt.teams) {
@@ -2122,7 +2384,7 @@ export class OlympiaGame {
       this.showToast("Đã nạp thành công dữ liệu từ file JSON!");
       this.switchRound(this.currentRound);
     } else {
-      alert("Lỗi nạp dữ liệu: " + res.error);
+      this.showAlert("Lỗi nạp dữ liệu", res.error);
     }
   }
 
@@ -2159,7 +2421,7 @@ export class OlympiaGame {
         this.showToast("Nạp file JSON thành công!");
         this.switchRound(this.currentRound);
       } else {
-        alert("Lỗi khi đọc file JSON: " + res.error);
+        this.showAlert("Không đọc được file JSON", res.error);
       }
     };
     reader.readAsText(file);
@@ -2464,8 +2726,14 @@ export class OlympiaGame {
     }
   }
 
-  resetAllGame() {
-    if (confirm("Bạn có chắc chắn muốn đặt lại điểm số và chơi lại từ đầu không?")) {
+  async resetAllGame() {
+    const okRestart = await this.confirmDialog({
+      title: "Chơi lại từ đầu?",
+      message: "Điểm số của 4 đội sẽ về 0, tiến trình các vòng thi được làm mới và quay về Trang chủ.",
+      confirmText: "Chơi lại",
+      danger: true
+    });
+    if (okRestart) {
       this.data.teams.forEach((t) => (t.score = 0));
       questionManager.saveData(this.data);
       this.currentTeamTurn = 1;
@@ -2480,8 +2748,14 @@ export class OlympiaGame {
     }
   }
 
-  restoreDefaultQuestions() {
-    if (confirm("Khôi phục toàn bộ các sự kiện và ngân hàng câu hỏi mẫu ban đầu?")) {
+  async restoreDefaultQuestions() {
+    const okRestore = await this.confirmDialog({
+      title: "Khôi phục dữ liệu mẫu?",
+      message: "Toàn bộ sự kiện và bộ đề thầy cô đã tạo sẽ bị thay bằng dữ liệu mẫu ban đầu. Nên tải file JSON về máy để sao lưu trước.",
+      confirmText: "Khôi phục",
+      danger: true
+    });
+    if (okRestore) {
       this.data = questionManager.resetToDefault();
       this.selectedSettingsEventId = questionManager.state.activeEventId;
       this.selectedSettingsBankId = questionManager.getActiveEvent().questionBankId;
