@@ -639,6 +639,11 @@ export class OlympiaGame {
     this.navStepBtns.forEach((btn) => {
       const r = parseInt(btn.dataset.round, 10);
       btn.classList.toggle("active", r === roundNum);
+      // Trên điện thoại thanh vòng thi cuộn ngang: đưa vòng đang chọn vào giữa
+      const nav = btn.parentElement;
+      if (r === roundNum && nav && nav.scrollWidth > nav.clientWidth) {
+        nav.scrollTo({ left: btn.offsetLeft - (nav.clientWidth - btn.offsetWidth) / 2, behavior: "smooth" });
+      }
     });
 
     [
