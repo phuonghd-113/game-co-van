@@ -2971,3 +2971,352 @@ html, body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   BỐ CỤC MÀN HÌNH MÁY CHIẾU (1280×720, 1366×768...)
+   Header một dòng, thanh chấm điểm luôn hiển thị, nội dung không bị cắt.
+   ========================================================================== */
+.stage-header {
+  gap: 16px;
+}
+
+.header-brand {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.brand-title-wrap {
+  min-width: 0;
+}
+
+.brand-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.brand-subtitle {
+  overflow: hidden;
+}
+
+.brand-tag,
+.round-step-btn,
+.cloud-status-text,
+.user-role-label,
+.user-name-label {
+  white-space: nowrap;
+}
+
+.round-navbar,
+.header-actions {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1500px) {
+  /* Trạng thái đám mây chỉ còn chấm màu (tooltip vẫn giữ), huy hiệu tài khoản chỉ còn icon */
+  .cloud-status-text,
+  .user-role-label,
+  .user-name-label {
+    display: none;
+  }
+  .round-step-btn {
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 1400px) and (min-width: 769px) {
+  .brand-subtitle {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px) and (min-width: 769px) {
+  .brand-title-wrap {
+    display: none;
+  }
+}
+
+/* Thanh chấm điểm của giáo viên luôn dính ở đáy khung, kể cả khi nội dung phải cuộn */
+.interactive-toolbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  box-shadow: 0 -8px 14px -10px rgba(15, 23, 42, 0.25); /* taste-skill-ignore */
+}
+
+/* Màn hình chào: căn giữa nhưng không cắt phần đầu khi nội dung cao hơn khung */
+.welcome-screen {
+  justify-content: flex-start;
+}
+.welcome-screen > :first-child {
+  margin-top: auto;
+}
+.welcome-screen > :last-child {
+  margin-bottom: auto;
+}
+
+/* Vòng 4: thanh chọn gói câu hỏi */
+.r4-pack-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.r4-pack-label {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+/* Vòng 2: bố cục vừa khít chiều cao khung thay vì tràn xuống dưới */
+#view-round2 .obstacle-layout {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+
+#view-round2 .obstacle-image-container {
+  min-height: 0;
+}
+
+#view-round2 .obstacle-rows-container {
+  min-height: 0;
+  overflow-y: auto;
+  justify-content: flex-start;
+}
+
+.r2-question-area {
+  min-height: 84px;
+  flex-shrink: 0;
+}
+
+.r2-question-text {
+  font-size: clamp(1rem, 1.45vw, 1.2rem);
+}
+
+/* Màn hình thấp (máy chiếu 720p / 768p): thu gọn header, bục đội và khoảng trống */
+@media (max-height: 820px) and (min-width: 769px) {
+  .stage-header {
+    padding: 5px 20px;
+  }
+  .brand-laurel-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .arena-view {
+    padding: 10px 16px;
+  }
+  .stage-pedestals {
+    gap: 10px;
+    padding: 4px 20px 6px;
+  }
+  .team-pedestal {
+    padding: 4px 8px;
+  }
+  .team-header-row {
+    margin-bottom: 2px;
+  }
+  .pedestal-score-screen {
+    padding: 2px 6px;
+  }
+  .score-display-value {
+    font-size: 1.35rem;
+  }
+  .pedestal-actions {
+    margin-top: 3px;
+  }
+  .question-top-bar {
+    margin-bottom: 8px;
+  }
+  .welcome-laurel-badge {
+    width: 44px;
+    height: 44px;
+  }
+  #view-round2 .row-item {
+    padding: 5px 12px;
+  }
+  #view-round2 .keyword-hint-badge {
+    padding: 5px 12px;
+  }
+  #view-round2 .obstacle-rows-container {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  #view-round2 .obstacle-layout {
+    grid-template-rows: auto;
+  }
+  #view-round2 .obstacle-image-container {
+    aspect-ratio: 4 / 3;
+  }
+  #view-round2 .obstacle-rows-container {
+    overflow: visible;
+  }
+}
+
+/* ==========================================================================
+   CHẾ ĐỘ TRÌNH CHIẾU (PRESENTER MODE)
+   Ẩn mọi nút dành cho giáo viên khỏi màn chiếu; điều khiển bằng phím tắt.
+   ========================================================================== */
+.btn-icon-round.is-active {
+  background: var(--blue-brand);
+  border-color: var(--blue-brand);
+  color: #ffffff;
+}
+
+body.presenter-mode .interactive-toolbar,
+body.presenter-mode .pedestal-actions,
+body.presenter-mode .speed-actions,
+body.presenter-mode #user-profile-badge,
+body.presenter-mode #cloud-status-badge,
+body.presenter-mode .header-actions > .btn-icon-round:not(#btn-presenter),
+body.presenter-mode .r4-pack-bar > :not(.is-active) {
+  display: none !important;
+}
+
+body.presenter-mode .r4-pack-bar:not(:has(.is-active)) {
+  display: none;
+}
+
+body.presenter-mode .team-pedestal {
+  cursor: default;
+}
+
+body.presenter-mode .team-pedestal:not(.active-turn):hover {
+  transform: none;
+  border-color: var(--border-light);
+}
+
+/* Không còn thanh công cụ → dùng chỗ trống cho chữ to hơn, nhìn rõ từ cuối lớp */
+body.presenter-mode .question-text {
+  font-size: clamp(1.35rem, 2.5vw, 2.2rem);
+}
+
+body.presenter-mode .r2-question-text {
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+}
+
+body.presenter-mode .answer-card {
+  font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+  padding: 14px 18px;
+  min-height: clamp(64px, 12vh, 120px);
+}
+
+body.presenter-mode .answers-grid {
+  gap: 12px;
+}
+
+body.presenter-mode .question-display-area:not(.r2-question-area) {
+  min-height: clamp(72px, 14vh, 150px);
+}
+
+body.presenter-mode .score-display-value {
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+}
+
+/* Gợi ý nhỏ ở góc màn hình: hiện khi bật chế độ hoặc khi di chuột, rồi tự mờ đi */
+.presenter-hint {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 150;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+body.presenter-mode .presenter-hint {
+  display: flex;
+}
+
+.presenter-hint.visible {
+  opacity: 1;
+}
+
+.presenter-hint-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+/* Bảng phím tắt */
+.modal-shortcuts-content {
+  max-width: 940px;
+}
+
+.shortcut-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.shortcut-group-title {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue-brand);
+  margin-bottom: 10px;
+}
+
+.shortcut-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+}
+
+.shortcut-list > div {
+  display: grid;
+  grid-template-columns: 84px 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.shortcut-list dt {
+  white-space: nowrap;
+}
+
+.shortcut-list dd {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-sub);
+  line-height: 1.35;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 22px;
+  padding: 1px 6px;
+  border: 1.5px solid var(--border-light);
+  border-bottom-width: 2.5px;
+  border-radius: 5px;
+  background: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.presenter-hint kbd {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.5);
+}

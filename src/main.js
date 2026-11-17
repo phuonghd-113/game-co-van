@@ -51,15 +51,17 @@ window.showGuideTab = function(tabName) {
   });
 };
 
-// Khởi tạo trò chơi
-document.addEventListener("DOMContentLoaded", () => {
-  window.game = new OlympiaGame();
-});
-
-// Trường hợp Vite HMR hoặc DOM đã tải xong trước khi script chạy
-if (document.readyState === "complete" || document.readyState === "interactive") {
+// Khởi tạo trò chơi đúng MỘT lần (module script chạy khi readyState đã là "interactive",
+// nên nếu vừa gọi ngay vừa chờ DOMContentLoaded sẽ tạo 2 instance và nhân đôi phím tắt / điểm số)
+function initGame() {
   if (!window.game) {
     window.game = new OlympiaGame();
   }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initGame);
+} else {
+  initGame();
 }
 

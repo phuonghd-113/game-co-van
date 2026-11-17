@@ -102,6 +102,9 @@
         <button class="btn-icon-round" id="btn-settings" title="Cài đặt và Quản lý câu hỏi" aria-label="Cài đặt">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </button>
+        <button class="btn-icon-round" id="btn-presenter" title="Chế độ trình chiếu: ẩn nút giáo viên, điều khiển bằng phím tắt (phím P)" aria-label="Chế độ trình chiếu" aria-pressed="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+        </button>
         <button class="btn-icon-round" id="btn-fullscreen" title="Toàn màn hình trình chiếu" aria-label="Toàn màn hình">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
         </button>
@@ -269,6 +272,7 @@
             <div class="toolbar-group">
               <button class="btn-action btn-correct" onclick="window.game.r1GradeCorrect()">Đúng (+10đ)</button>
               <button class="btn-action btn-wrong" onclick="window.game.r1GradeWrong()">Sai (0đ)</button>
+              <button class="btn-action btn-reveal" onclick="window.game.r1RevealAnswer()">Hiện đáp án</button>
               <button class="btn-action btn-prev" onclick="window.game.r1PrevQuestion()">Quay lại</button>
               <button class="btn-action btn-next" onclick="window.game.r1NextQuestion()">Câu tiếp theo</button>
             </div>
@@ -330,8 +334,8 @@
               <div class="rows-list" id="r2-rows-list"></div>
 
               <!-- Chi tiết câu hỏi hàng ngang đang chọn -->
-              <div class="question-display-area" style="min-height: 110px;">
-                <p class="question-text" id="r2-question-text" style="font-size: 1.15rem;">Chọn một hàng ngang để đọc câu hỏi.</p>
+              <div class="question-display-area r2-question-area">
+                <p class="question-text r2-question-text" id="r2-question-text">Chọn một hàng ngang để đọc câu hỏi.</p>
                 <div id="r2-answer-reveal" style="display:none; color:var(--gold-primary); font-weight:bold; margin-top:8px; font-size:1.1rem;"></div>
               </div>
 
@@ -431,8 +435,8 @@
           </div>
 
           <!-- Nút chọn gói câu hỏi 20, 30, 40 điểm -->
-          <div style="display:flex; gap:10px; margin-bottom:12px; align-items:center; flex-wrap:wrap;">
-            <span style="font-size:0.9rem; font-weight:800; color:var(--text-main);">Chọn gói câu hỏi:</span>
+          <div class="r4-pack-bar">
+            <span class="r4-pack-label">Chọn gói câu hỏi:</span>
             <button class="btn-action btn-next" onclick="window.game.r4SelectPack(20)">Gói 20 Điểm</button>
             <button class="btn-action btn-next" onclick="window.game.r4SelectPack(30)">Gói 30 Điểm</button>
             <button class="btn-action btn-next" onclick="window.game.r4SelectPack(40)">Gói 40 Điểm</button>
@@ -1293,6 +1297,58 @@
   </div>
 
   <!-- Toast thông báo nhỏ góc dưới -->
+  <!-- ======================================================================
+       MODAL 5: BẢNG PHÍM TẮT ĐIỀU KHIỂN (DÙNG KHI TRÌNH CHIẾU)
+       ====================================================================== -->
+  <div class="modal-overlay" id="modal-shortcuts" data-ui>
+    <div class="modal-content modal-shortcuts-content">
+      <div class="modal-header">
+        <h3 class="modal-title">PHÍM TẮT ĐIỀU KHIỂN</h3>
+        <button class="btn-close-modal" id="btn-close-shortcuts" aria-label="Đóng bảng phím tắt">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="shortcut-groups">
+          <div class="shortcut-group">
+            <div class="shortcut-group-title">Chung</div>
+            <dl class="shortcut-list">
+              <div><dt><kbd>P</kbd></dt><dd>Bật / tắt chế độ trình chiếu</dd></div>
+              <div><dt><kbd>F</kbd></dt><dd>Toàn màn hình</dd></div>
+              <div><dt><kbd>L</kbd></dt><dd>Bảng xếp hạng</dd></div>
+              <div><dt><kbd>M</kbd></dt><dd>Bật / tắt âm thanh</dd></div>
+              <div><dt><kbd>?</kbd></dt><dd>Mở bảng phím tắt này</dd></div>
+              <div><dt><kbd>Esc</kbd></dt><dd>Đóng cửa sổ đang mở</dd></div>
+            </dl>
+          </div>
+          <div class="shortcut-group">
+            <div class="shortcut-group-title">Trong vòng thi</div>
+            <dl class="shortcut-list">
+              <div><dt><kbd>Enter</kbd></dt><dd>Chấm ĐÚNG (cộng điểm)</dd></div>
+              <div><dt><kbd>Backspace</kbd></dt><dd>Chấm SAI</dd></div>
+              <div><dt><kbd>R</kbd></dt><dd>Hiện đáp án</dd></div>
+              <div><dt><kbd>→</kbd> <kbd>←</kbd></dt><dd>Câu tiếp / câu trước (Vòng 2: chọn hàng ngang)</dd></div>
+              <div><dt><kbd>Space</kbd></dt><dd>Tạm dừng / chạy tiếp đồng hồ</dd></div>
+              <div><dt><kbd>1</kbd>–<kbd>4</kbd></dt><dd>Chọn đội thi (Vòng 3: ghi nhận đội bấm chuông)</dd></div>
+            </dl>
+          </div>
+          <div class="shortcut-group">
+            <div class="shortcut-group-title">Riêng từng vòng</div>
+            <dl class="shortcut-list">
+              <div><dt><kbd>B</kbd></dt><dd>Vòng 2: bấm chuông đoán từ khóa</dd></div>
+              <div><dt><kbd>0</kbd></dt><dd>Vòng 3: đặt lại lượt bấm chuông</dd></div>
+              <div><dt><kbd>G</kbd></dt><dd>Vòng 4: đổi gói 20 → 30 → 40 điểm</dd></div>
+              <div><dt><kbd>N</kbd></dt><dd>Vòng 4: bật / tắt Ngôi Sao Hy Vọng</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="presenter-hint" id="presenter-hint" aria-hidden="true">
+    <span class="presenter-hint-dot"></span>
+    Chế độ trình chiếu · <kbd>P</kbd> thoát · <kbd>?</kbd> phím tắt
+  </div>
+
   <div class="toast-notice" id="toast-notice" data-ui>Thông báo</div>
 
   <!-- VITE ENTRY POINT -->

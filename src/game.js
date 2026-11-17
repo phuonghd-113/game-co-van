@@ -57,6 +57,10 @@ export class OlympiaGame {
     this.leaderboardBtn = document.getElementById("btn-leaderboard");
     this.guideBtn = document.getElementById("btn-guide");
     this.settingsBtn = document.getElementById("btn-settings");
+    this.presenterBtn = document.getElementById("btn-presenter");
+    this.presenterHintEl = document.getElementById("presenter-hint");
+    this.modalShortcuts = document.getElementById("modal-shortcuts");
+    this.presenterMode = false;
     this.userProfileBadge = document.getElementById("user-profile-badge");
     this.currentUserNameEl = document.getElementById("current-user-name");
     this.navStepBtns = document.querySelectorAll(".round-step-btn");
@@ -256,52 +260,191 @@ export class OlympiaGame {
       }
     });
 
-    // Bàn phím bấm chuông (Phím 1, 2, 3, 4 cho 4 đội và Phím Space tạm dừng đồng hồ)
-    window.addEventListener("keydown", (e) => {
-      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
-      if (activeTag === "input" || activeTag === "textarea" || activeTag === "select") return;
-
-      // Phím tắt bấm chuông vòng 3 Tăng tốc
-      if (this.currentRound === 3) {
-        if (e.key === "1" || e.code === "Digit1" || e.code === "Numpad1") {
-          e.preventDefault();
-          this.r3RecordBuzz(1);
-        } else if (e.key === "2" || e.code === "Digit2" || e.code === "Numpad2") {
-          e.preventDefault();
-          this.r3RecordBuzz(2);
-        } else if (e.key === "3" || e.code === "Digit3" || e.code === "Numpad3") {
-          e.preventDefault();
-          this.r3RecordBuzz(3);
-        } else if (e.key === "4" || e.code === "Digit4" || e.code === "Numpad4") {
-          e.preventDefault();
-          this.r3RecordBuzz(4);
-        }
-      }
-
-      // Phím Esc đóng các modal
-      if (e.key === "Escape") {
-        this.closeModals();
-      }
-
-      // Phím Space tạm dừng / chạy tiếp đồng hồ
-      if (e.code === "Space") {
-        e.preventDefault();
-        if (this.currentRound === 3) {
-          this.pauseResumeTimer(this.r3TimerNum, this.r3TimerRing, this.r3TimerBox);
-        } else if (this.currentRound === 1) {
-          this.pauseResumeTimer(this.r1TimerNum, this.r1TimerRing, this.r1TimerBox);
-        } else if (this.currentRound === 4) {
-          this.pauseResumeTimer(this.r4TimerNum, this.r4TimerRing, this.r4TimerBox);
-        }
-      }
+    // Chế độ trình chiếu (ẩn nút giáo viên) & bảng phím tắt
+    if (this.presenterBtn) {
+      this.presenterBtn.addEventListener("click", () => this.togglePresenterMode());
+    }
+    const btnCloseShortcuts = document.getElementById("btn-close-shortcuts");
+    if (btnCloseShortcuts) {
+      btnCloseShortcuts.addEventListener("click", () => this.closeModals());
+    }
+    if (this.modalShortcuts) {
+      this.modalShortcuts.addEventListener("click", (e) => {
+        if (e.target === this.modalShortcuts) this.closeModals();
+      });
+    }
+    // Di chuột khi đang trình chiếu: hiện lại gợi ý thoát chế độ trong giây lát
+    window.addEventListener("mousemove", () => {
+      if (this.presenterMode) this.flashPresenterHint();
     });
+    let savedPresenter = false;
+    try { savedPresenter = localStorage.getItem("olympia_presenter_mode") === "true"; } catch (err) {}
+    if (savedPresenter) this.setPresenterMode(true, { silent: true });
+
+    window.addEventListener("keydown", (e) => this.handleShortcutKey(e));
+  }
+
+  // =========================================================================
+  // CHẾ ĐỘ TRÌNH CHIẾU & PHÍM TẮT
+  // =========================================================================
+  setPresenterMode(on, { silent = false } = {}) {
+    this.presenterMode = on;
+    document.body.classList.toggle("presenter-mode", on);
+    if (this.presenterBtn) {
+      this.presenterBtn.classList.toggle("is-active", on);
+      this.presenterBtn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+    try { localStorage.setItem("olympia_presenter_mode", on ? "true" : "false"); } catch (err) {}
+    if (on) this.flashPresenterHint();
+    if (!silent) {
+      this.showToast(on
+        ? "Đã bật chế độ trình chiếu – bấm ? để xem phím tắt"
+        : "Đã tắt chế độ trình chiếu");
+    }
+  }
+
+  togglePresenterMode() {
+    this.setPresenterMode(!this.presenterMode);
+  }
+
+  flashPresenterHint() {
+    if (!this.presenterHintEl) return;
+    this.presenterHintEl.classList.add("visible");
+    clearTimeout(this.presenterHintTimer);
+    this.presenterHintTimer = setTimeout(() => {
+      this.presenterHintEl.classList.remove("visible");
+    }, 2500);
+  }
+
+  openShortcuts() {
+    if (this.modalShortcuts) this.modalShortcuts.classList.add("open");
+  }
+
+  isAnyModalOpen() {
+    return !!document.querySelector(".modal-overlay.open");
+  }
+
+  handleShortcutKey(e) {
+    const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
+    if (activeTag === "input" || activeTag === "textarea" || activeTag === "select") return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    // Phím Esc đóng các modal
+    if (e.key === "Escape") {
+      this.closeModals();
+      return;
+    }
+
+    if (e.key === "?") {
+      e.preventDefault();
+      this.openShortcuts();
+      return;
+    }
+
+    // Khi đang mở cửa sổ (cài đặt, xếp hạng...), không xử lý phím điều khiển trận đấu
+    if (this.isAnyModalOpen()) return;
+
+    // Các phím điều khiển trận đấu yêu cầu đã đăng nhập (giống các nút giáo viên)
+    if (!this.isAuthenticated()) return;
+
+    // Tránh việc nhấn Space/Enter kích hoạt lại nút vừa được click (đang giữ focus)
+    if (document.activeElement && document.activeElement.tagName === "BUTTON" &&
+        (e.code === "Space" || e.key === "Enter")) {
+      document.activeElement.blur();
+    }
+
+    const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    const round = this.currentRound;
+    const digitMatch = /^(Digit|Numpad)([0-9])$/.exec(e.code);
+    const digit = digitMatch ? parseInt(digitMatch[2], 10) : null;
+
+    const handled = (() => {
+      // --- Phím chung ---
+      if (key === "p") { this.togglePresenterMode(); return true; }
+      if (key === "f") { this.fullscreenBtn.click(); return true; }
+      if (key === "l") { this.openLeaderboard(); return true; }
+      if (key === "m") { this.soundToggleBtn.click(); return true; }
+
+      // --- Chọn đội / bấm chuông: phím 1-4 ---
+      if (digit !== null && digit >= 1 && digit <= 4) {
+        if (round === 3) this.r3RecordBuzz(digit);
+        else if (round >= 1 && round <= 4) this.setTeamTurn(digit);
+        else return false;
+        return true;
+      }
+      if (digit === 0 && round === 3) { this.r3ResetBuzzers(); return true; }
+
+      // --- Tạm dừng đồng hồ ---
+      if (e.code === "Space") {
+        if (round === 1) this.pauseResumeTimer(this.r1TimerNum, this.r1TimerRing, this.r1TimerBox);
+        else if (round === 3) this.pauseResumeTimer(this.r3TimerNum, this.r3TimerRing, this.r3TimerBox);
+        else if (round === 4) this.pauseResumeTimer(this.r4TimerNum, this.r4TimerRing, this.r4TimerBox);
+        else return false;
+        return true;
+      }
+
+      // --- Chấm điểm ---
+      if (key === "Enter") {
+        if (round === 1) this.r1GradeCorrect();
+        else if (round === 2) this.r2SolveActiveRow(true);
+        else if (round === 3) this.r3GradeCorrect();
+        else if (round === 4) this.r4GradeCorrect();
+        else return false;
+        return true;
+      }
+      if (key === "Backspace") {
+        if (round === 1) this.r1GradeWrong();
+        else if (round === 2) this.r2SolveActiveRow(false);
+        else if (round === 3) this.r3GradeWrong();
+        else if (round === 4) this.r4GradeWrong();
+        else return false;
+        return true;
+      }
+      if (key === "r") {
+        if (round === 1) this.r1RevealAnswer();
+        else if (round === 3) this.r3RevealAnswer();
+        else if (round === 4) this.r4RevealAnswer();
+        else return false;
+        return true;
+      }
+
+      // --- Điều hướng câu hỏi / hàng ngang ---
+      if (key === "ArrowRight" || key === "ArrowLeft") {
+        const next = key === "ArrowRight";
+        if (round === 1) next ? this.r1NextQuestion() : this.r1PrevQuestion();
+        else if (round === 2) {
+          const total = (this.data.round2.rows || []).length || 4;
+          this.activeRowIdx = (this.activeRowIdx + (next ? 1 : total - 1)) % total;
+          this.renderRound2();
+        }
+        else if (round === 3) next ? this.r3NextQuestion() : this.r3PrevQuestion();
+        else if (round === 4 && next) this.r4NextQuestion();
+        else return false;
+        return true;
+      }
+
+      // --- Riêng từng vòng ---
+      if (key === "b" && round === 2) { this.triggerObstacleBuzzer(); return true; }
+      if (key === "g" && round === 4) {
+        const packs = [20, 30, 40];
+        const idx = packs.indexOf(this.selectedPackPoints);
+        this.r4SelectPack(packs[(idx + 1) % packs.length]);
+        return true;
+      }
+      if (key === "n" && round === 4) { this.toggleStarOfHope(); return true; }
+
+      return false;
+    })();
+
+    if (handled) e.preventDefault();
   }
 
   showToast(msg) {
     if (!this.toastEl) return;
     this.toastEl.innerText = msg;
     this.toastEl.classList.add("show");
-    setTimeout(() => {
+    clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => {
       this.toastEl.classList.remove("show");
     }, 2400);
   }
@@ -624,6 +767,15 @@ export class OlympiaGame {
     this.stopTimer();
     soundEngine.playWrong();
     this.showToast("CHƯA CHÍNH XÁC!");
+  }
+
+  r1RevealAnswer() {
+    const qList = (this.data.round1.teamsQuestions && this.data.round1.teamsQuestions[this.currentTeamTurn]) || [];
+    const currentQ = qList[this.currentQuestionIdx];
+    if (currentQ) {
+      this.revealAnswer(this.r1AnswersContainer, currentQ);
+      if (currentQ.explanation) this.showToast(`Giải thích: ${currentQ.explanation}`);
+    }
   }
 
   r1NextQuestion() {
@@ -1161,6 +1313,7 @@ export class OlympiaGame {
 
   updateStarButton() {
     if (!this.r4StarBtn) return;
+    this.r4StarBtn.classList.toggle("is-active", !!this.starOfHopeActive);
     if (this.starOfHopeActive) {
       this.r4StarBtn.style.background = "#DC2626";
       this.r4StarBtn.innerHTML = "Ngôi Sao Đang Bật (x2)";
@@ -1432,6 +1585,9 @@ export class OlympiaGame {
     this.modalSettings.classList.remove("open");
     if (this.modalGuide) {
       this.modalGuide.classList.remove("open");
+    }
+    if (this.modalShortcuts) {
+      this.modalShortcuts.classList.remove("open");
     }
     if (this.isAuthenticated() && this.modalLogin) {
       this.modalLogin.classList.remove("open");
