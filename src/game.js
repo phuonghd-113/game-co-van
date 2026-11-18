@@ -282,6 +282,7 @@ export class OlympiaGame {
     if (savedPresenter) this.setPresenterMode(true, { silent: true });
 
     this.initDialog();
+    this.initA11y();
     window.addEventListener("keydown", (e) => this.handleShortcutKey(e));
   }
 
@@ -488,6 +489,51 @@ export class OlympiaGame {
     });
   }
 
+  // =========================================================================
+  // KHẢ NĂNG TRUY CẬP (bàn phím, trình đọc màn hình)
+  // =========================================================================
+  initA11y() {
+    // Thẻ <div role="button"> (đáp án, bục đội, hàng ngang...) bấm được bằng Enter / Space.
+    // Chạy ở document (trước window) để Enter không bị hiểu thành phím tắt "Chấm ĐÚNG".
+    document.addEventListener("keydown", (e) => {
+      const el = e.target;
+      if (!el || el.tagName === "BUTTON" || el.tagName === "INPUT" || el.tagName === "A") return;
+      if (el.getAttribute && el.getAttribute("role") === "button" && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        e.stopPropagation();
+        el.click();
+      }
+    });
+
+    // Khai báo các modal là dialog & tự chuyển focus vào khi mở, trả focus khi đóng
+    document.querySelectorAll(".modal-overlay:not(#modal-dialog)").forEach((overlay, idx) => {
+      const content = overlay.querySelector(".modal-content");
+      const title = overlay.querySelector(".modal-title, .login-title");
+      if (content) {
+        content.setAttribute("role", "dialog");
+        content.setAttribute("aria-modal", "true");
+        if (title) {
+          if (!title.id) title.id = `modal-title-${idx}`;
+          content.setAttribute("aria-labelledby", title.id);
+        }
+      }
+      let returnFocus = null;
+      new MutationObserver(() => {
+        const isOpen = overlay.classList.contains("open");
+        if (isOpen && !overlay.contains(document.activeElement)) {
+          returnFocus = document.activeElement;
+          const target = overlay.querySelector("input:not([type=hidden]):not([disabled]), .btn-close-modal, button");
+          if (target) requestAnimationFrame(() => target.focus({ preventScroll: true }));
+        } else if (!isOpen && returnFocus) {
+          if (document.contains(returnFocus) && typeof returnFocus.focus === "function") {
+            returnFocus.focus({ preventScroll: true });
+          }
+          returnFocus = null;
+        }
+      }).observe(overlay, { attributes: true, attributeFilter: ["class"] });
+    });
+  }
+
   showAlert(title, message = "", tone = "danger") {
     return this.openDialog({
       title,
@@ -681,6 +727,10 @@ export class OlympiaGame {
       const isTurn = this.currentTeamTurn === team.id;
       const card = document.createElement("div");
       card.className = `team-pedestal ${isTurn ? "active-turn" : ""}`;
+      card.setAttribute("role", "button");
+      card.tabIndex = 0;
+      card.setAttribute("aria-label", `Chọn lượt cho ${team.name}, ${team.score} điểm`);
+      if (isTurn) card.setAttribute("aria-current", "true");
       card.style.setProperty("--team-color", team.color);
 
       card.innerHTML = `
@@ -852,7 +902,8 @@ export class OlympiaGame {
       // Trên điện thoại thanh vòng thi cuộn ngang: đưa vòng đang chọn vào giữa
       const nav = btn.parentElement;
       if (r === roundNum && nav && nav.scrollWidth > nav.clientWidth) {
-        nav.scrollTo({ left: btn.offsetLeft - (nav.clientWidth - btn.offsetWidth) / 2, behavior: "smooth" });
+        const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        nav.scrollTo({ left: btn.offsetLeft - (nav.clientWidth - btn.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" });
       }
     });
 
@@ -925,6 +976,8 @@ export class OlympiaGame {
     currentQ.options.forEach((opt, idx) => {
       const card = document.createElement("div");
       card.className = "answer-card";
+      card.setAttribute("role", "button");
+      card.tabIndex = 0;
       card.innerHTML = `<span class="ans-letter">${letters[idx]}.</span> <span>${opt.replace(/^[A-D]\.\s*/, "")}</span>`;
 
       card.addEventListener("click", () => {
@@ -1048,6 +1101,9 @@ export class OlympiaGame {
         const isActive = this.activeRowIdx === idx;
         const rowItem = document.createElement("div");
         rowItem.className = `row-item ${isActive ? "active" : ""} ${isSolved ? "solved" : ""}`;
+        rowItem.setAttribute("role", "button");
+        rowItem.tabIndex = 0;
+        if (isActive) rowItem.setAttribute("aria-current", "true");
 
         let cellsHtml = "";
         const letters = row.answer.toUpperCase();
@@ -1179,6 +1235,8 @@ export class OlympiaGame {
     currentQ.options.forEach((opt, idx) => {
       const card = document.createElement("div");
       card.className = "answer-card";
+      card.setAttribute("role", "button");
+      card.tabIndex = 0;
       card.innerHTML = `<span class="ans-letter">${letters[idx]}.</span> <span>${opt.replace(/^[A-D]\.\s*/, "")}</span>`;
 
       card.addEventListener("click", () => {
@@ -1508,6 +1566,8 @@ export class OlympiaGame {
     currentQ.options.forEach((opt, idx) => {
       const card = document.createElement("div");
       card.className = "answer-card";
+      card.setAttribute("role", "button");
+      card.tabIndex = 0;
       card.innerHTML = `<span class="ans-letter">${letters[idx]}.</span> <span>${opt.replace(/^[A-D]\.\s*/, "")}</span>`;
 
       card.addEventListener("click", () => {
@@ -1751,6 +1811,7 @@ export class OlympiaGame {
   // =========================================================================
   startFireworks() {
     if (!this.fireworksCanvas) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const canvas = this.fireworksCanvas;
     const ctx = canvas.getContext("2d");
     canvas.width = canvas.parentElement.clientWidth;

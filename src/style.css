@@ -74,60 +74,6 @@ html, body {
   overflow: hidden;
 }
 
-/* Chùm ánh sáng rực rỡ tươi vui */
-.stage-spotlights {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  right: 0;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.spotlight {
-  position: absolute;
-  top: 0;
-  width: 480px;
-  height: 130%;
-  opacity: 0.12;
-  filter: blur(36px);
-  transform-origin: top center;
-  animation: sweepStageLight 12s ease-in-out infinite alternate;
-}
-
-.spotlight-left-1 {
-  left: 8%;
-  background: conic-gradient(from 170deg at 50% 0%, transparent 0deg, rgba(37, 99, 235, 0.5) 14deg, transparent 28deg); /* taste-skill-ignore */
-  animation-duration: 9s;
-}
-
-.spotlight-left-2 {
-  left: 26%;
-  background: conic-gradient(from 175deg at 50% 0%, transparent 0deg, rgba(245, 158, 11, 0.5) 12deg, transparent 24deg); /* taste-skill-ignore */
-  animation-duration: 11s;
-  animation-delay: -3s;
-}
-
-.spotlight-right-1 {
-  right: 26%;
-  background: conic-gradient(from 185deg at 50% 0%, transparent 0deg, rgba(245, 158, 11, 0.5) 12deg, transparent 24deg); /* taste-skill-ignore */
-  animation-duration: 10s;
-  animation-delay: -5s;
-}
-
-.spotlight-right-2 {
-  right: 8%;
-  background: conic-gradient(from 190deg at 50% 0%, transparent 0deg, rgba(37, 99, 235, 0.5) 14deg, transparent 28deg); /* taste-skill-ignore */
-  animation-duration: 13s;
-  animation-delay: -2s;
-}
-
-@keyframes sweepStageLight {
-  0% { transform: rotate(-15deg); }
-  100% { transform: rotate(15deg); }
-}
-
 /* Sàn sân khấu ánh sáng tươi sáng */
 .stage-floor {
   position: absolute;
@@ -3954,4 +3900,187 @@ body[data-round="5"] .team-pedestal.active-turn::after {
   color: #92400e;
   border-color: #f59e0b;
   border-bottom-color: var(--gold-deep);
+}
+
+/* ==========================================================================
+   CÀI ĐẶT: bỏ cuộn lồng nhau, lưới 3 cột, gom thao tác nguy hiểm
+   ========================================================================== */
+.form-row-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Danh sách câu hỏi dùng chung thanh cuộn của modal (trước đây cuộn riêng 380px) */
+.editor-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Hàng "Chọn vòng thi" dính trên đầu khi cuộn qua danh sách câu hỏi dài */
+#tab-pane-bank .editor-round-bar {
+  position: sticky;
+  top: -24px; /* bù padding của .modal-body */
+  z-index: 3;
+  background: #ffffff;
+  margin-left: -4px;
+  margin-right: -4px;
+  padding: 10px 4px;
+  box-shadow: 0 8px 10px -10px rgba(15, 23, 42, 0.25); /* taste-skill-ignore */
+}
+
+.settings-footer {
+  justify-content: flex-end;
+}
+
+.settings-footer-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.danger-zone {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1.5px solid #fecaca;
+  border-radius: var(--radius-md);
+  background: #fef2f2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+}
+
+.danger-zone-text {
+  flex: 1 1 260px;
+}
+
+.danger-zone-title {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: #991b1b;
+}
+
+.danger-zone-desc {
+  margin-top: 2px;
+  font-size: 0.82rem;
+  color: #7f1d1d;
+  line-height: 1.4;
+}
+
+.danger-zone-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-danger-outline {
+  background: #ffffff;
+  color: #b91c1c;
+  border: 1.5px solid #fca5a5;
+  border-bottom: 3px solid #f87171;
+}
+
+.btn-danger-outline:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+  #tab-pane-bank .editor-round-bar {
+    top: -14px;
+  }
+  .settings-footer-actions {
+    width: 100%;
+  }
+  .settings-footer-actions .btn-action {
+    flex: 1 1 0;
+    justify-content: center;
+    min-height: 40px;
+  }
+  .danger-zone-actions,
+  .danger-zone-actions .btn-action {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   KHẢ NĂNG TRUY CẬP
+   ========================================================================== */
+/* Ô nhập phải chọn / gõ được chữ (Safari iOS chặn gõ khi user-select: none) */
+input,
+textarea,
+select,
+[contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Viền nổi bật khi di chuyển bằng bàn phím (không hiện khi bấm chuột) */
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+label.btn-action:focus-within,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.form-input:focus-visible,
+.form-select:focus-visible,
+.form-textarea:focus-visible,
+.pregame-select:focus-visible {
+  outline: 2px solid #93c5fd;
+  outline-offset: 1px;
+}
+
+.pregame-team-box:focus-within {
+  border-color: var(--blue-brand);
+  box-shadow: 0 0 0 3px #bfdbfe; /* taste-skill-ignore */
+}
+
+/* Tôn trọng thiết lập "Giảm chuyển động" của hệ điều hành */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  #fireworks-canvas {
+    display: none !important;
+  }
+  .team-pedestal:hover,
+  .team-pedestal.active-turn,
+  .answer-card:hover:not(.disabled),
+  .btn-action:hover,
+  .btn-icon-round:hover {
+    transform: none !important;
+  }
+}
+
+/* Màn chào: nhãn gọn, dạng câu thường thay vì CHỮ HOA dài */
+.pregame-label {
+  font-size: 0.86rem;
+}
+
+.pregame-teams-label {
+  font-size: 0.82rem;
+  letter-spacing: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.pregame-teams-hint {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-dim);
 }

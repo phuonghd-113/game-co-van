@@ -13,14 +13,6 @@
   <!-- TOÀN BỘ SÂN KHẤU OLYMPIA TRUYỀN HÌNH -->
   <div class="olympia-stage">
     
-    <!-- Ánh đèn chùm rọi sân khấu (Moving Spotlights) -->
-    <div class="stage-spotlights">
-      <div class="spotlight spotlight-left-1"></div>
-      <div class="spotlight spotlight-left-2"></div>
-      <div class="spotlight spotlight-right-1"></div>
-      <div class="spotlight spotlight-right-2"></div>
-    </div>
-
     <!-- Sàn sân khấu phản quang 3D -->
     <div class="stage-floor"></div>
 
@@ -63,7 +55,7 @@
       <div class="header-actions">
         <!-- Huy hiệu Người dùng / Đăng xuất -->
         <!-- Đèn báo trạng thái đồng bộ Firebase Đám mây -->
-        <div class="cloud-status-badge" id="cloud-status-badge" title="Trạng thái đồng bộ Đám mây Firebase (Click để cấu hình)" onclick="window.game.openSettings('firebase')">
+        <div class="cloud-status-badge" id="cloud-status-badge" role="button" tabindex="0" aria-label="Trạng thái đồng bộ đám mây – mở cấu hình Firebase" title="Trạng thái đồng bộ Đám mây Firebase (Click để cấu hình)" onclick="window.game.openSettings('firebase')">
           <span class="cloud-status-dot dot-unconfigured" id="cloud-status-dot"></span>
           <span class="cloud-status-text" id="cloud-status-text">Đám mây</span>
         </div>
@@ -139,7 +131,6 @@
           <div class="pregame-setup-card" data-ui>
             <div class="pregame-header">
               <div class="pregame-badge">BÀN ĐIỀU HÀNH TRẬN ĐẤU</div>
-              <span class="pregame-hint">Cấu hình Sự kiện, Bộ đề thi và 4 Đội thi đấu trước khi bắt đầu</span>
             </div>
 
             <div class="pregame-controls-grid">
@@ -147,7 +138,7 @@
               <div class="pregame-control-col">
                 <label class="pregame-label" for="pregame-event-select">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                  SỰ KIỆN / TRẬN ĐẤU:
+                  Sự kiện / trận đấu
                 </label>
                 <div class="pregame-input-row">
                   <select id="pregame-event-select" class="form-select pregame-select" onchange="window.game.handleSelectEvent(this.value)">
@@ -163,7 +154,7 @@
               <div class="pregame-control-col">
                 <label class="pregame-label" for="pregame-bank-select">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
-                  BỘ ĐỀ THI GẮN KÈM:
+                  Bộ đề thi
                 </label>
                 <div class="pregame-input-row">
                   <select id="pregame-bank-select" class="form-select pregame-select" onchange="window.game.handleSelectBank(this.value)">
@@ -178,7 +169,7 @@
 
             <!-- Tên 4 Đội thi đấu (Quick edit trực tiếp) -->
             <div class="pregame-teams-section">
-              <div class="pregame-teams-label">TÊN 4 ĐỘI THI ĐẤU (THẦY CÔ CÓ THỂ ĐỔI NHANH TẠI ĐÂY):</div>
+              <div class="pregame-teams-label">Tên 4 đội <span class="pregame-teams-hint">bấm vào tên để đổi</span></div>
               <div class="pregame-teams-grid">
                 <div class="pregame-team-box team-1-box">
                   <span class="team-dot dot-1">1</span>
@@ -208,7 +199,7 @@
                 📖 Hướng dẫn sử dụng
               </button>
               <button type="button" class="btn-action btn-reveal" onclick="window.game.openSettings('event')">
-                Quản lý Sự kiện & Ngân hàng đề
+                Cài đặt nâng cao
               </button>
             </div>
           </div>
@@ -301,19 +292,19 @@
               
               <!-- 4 Mảnh ghép che ảnh -->
               <div class="puzzle-cover-grid">
-                <div class="puzzle-tile" id="puzzle-tile-1" onclick="window.game.activeRowIdx=0; window.game.renderRound2();">
+                <div class="puzzle-tile" id="puzzle-tile-1" role="button" tabindex="0" aria-label="Chọn hàng ngang 1" onclick="window.game.activeRowIdx=0; window.game.renderRound2();">
                   <div class="puzzle-tile-num">1</div>
                   <div class="puzzle-tile-label">Hàng ngang 1</div>
                 </div>
-                <div class="puzzle-tile" id="puzzle-tile-2" onclick="window.game.activeRowIdx=1; window.game.renderRound2();">
+                <div class="puzzle-tile" id="puzzle-tile-2" role="button" tabindex="0" aria-label="Chọn hàng ngang 2" onclick="window.game.activeRowIdx=1; window.game.renderRound2();">
                   <div class="puzzle-tile-num">2</div>
                   <div class="puzzle-tile-label">Hàng ngang 2</div>
                 </div>
-                <div class="puzzle-tile" id="puzzle-tile-3" onclick="window.game.activeRowIdx=2; window.game.renderRound2();">
+                <div class="puzzle-tile" id="puzzle-tile-3" role="button" tabindex="0" aria-label="Chọn hàng ngang 3" onclick="window.game.activeRowIdx=2; window.game.renderRound2();">
                   <div class="puzzle-tile-num">3</div>
                   <div class="puzzle-tile-label">Hàng ngang 3</div>
                 </div>
-                <div class="puzzle-tile" id="puzzle-tile-4" onclick="window.game.activeRowIdx=3; window.game.renderRound2();">
+                <div class="puzzle-tile" id="puzzle-tile-4" role="button" tabindex="0" aria-label="Chọn hàng ngang 4" onclick="window.game.activeRowIdx=3; window.game.renderRound2();">
                   <div class="puzzle-tile-num">4</div>
                   <div class="puzzle-tile-label">Hàng ngang 4</div>
                 </div>
@@ -544,7 +535,7 @@
     <div class="modal-content" style="max-width: 600px;">
       <div class="modal-header">
         <h3 class="modal-title">BẢNG XẾP HẠNG ĐIỂM SỐ</h3>
-        <button class="btn-close-modal" id="btn-close-lb">&times;</button>
+        <button class="btn-close-modal" id="btn-close-lb" aria-label="Đóng bảng xếp hạng">&times;</button>
       </div>
       <div class="modal-body">
         <div class="leaderboard-list" id="leaderboard-content-list"></div>
@@ -562,7 +553,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">CÀI ĐẶT VÀ TÙY CHỈNH NỘI DUNG BÀI HỌC</h3>
-        <button class="btn-close-modal" id="btn-close-settings">&times;</button>
+        <button class="btn-close-modal" id="btn-close-settings" aria-label="Đóng cài đặt">&times;</button>
       </div>
       <div class="modal-body">
         <div class="settings-tabs">
@@ -628,7 +619,7 @@
             </div>
           </div>
 
-          <div class="form-row" style="margin-top: 12px; margin-bottom: 12px;">
+          <div class="form-row form-row-3" style="margin-top: 12px; margin-bottom: 12px;">
             <div class="form-group">
               <label class="form-label" for="bank-title-input">Tên Bộ đề thi:</label>
               <input type="text" id="bank-title-input" class="form-input" onchange="window.game.updateSelectedBankMeta()">
@@ -652,7 +643,7 @@
               <option value="4">Vòng 4: Về Đích (Gói 20, 30, 40đ)</option>
             </select>
           </div>
-          <div id="editor-questions-list" style="display:flex; flex-direction:column; gap:12px; max-height:380px; overflow-y:auto; padding-right:6px;">
+          <div id="editor-questions-list" class="editor-questions-list">
             <!-- Render động bằng JavaScript -->
           </div>
         </div>
@@ -708,8 +699,16 @@
               </div>
             </div>
           </div>
-          <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn-action btn-wrong" onclick="window.game.resetTeamScores()">Đặt lại điểm 4 đội về 0</button>
+          <!-- Thao tác không hoàn tác được: gom riêng một chỗ, tránh bấm nhầm -->
+          <div class="danger-zone">
+            <div class="danger-zone-text">
+              <div class="danger-zone-title">Đặt lại trận đấu</div>
+              <p class="danger-zone-desc">Không thể hoàn tác. "Chơi lại từ đầu" đưa điểm về 0, làm mới tiến trình 4 vòng và quay về Trang chủ.</p>
+            </div>
+            <div class="danger-zone-actions">
+              <button type="button" class="btn-action btn-danger-outline" onclick="window.game.resetTeamScores()">Đặt lại điểm về 0</button>
+              <button type="button" class="btn-action btn-danger-outline" onclick="window.game.resetAllGame()">Chơi lại từ đầu</button>
+            </div>
           </div>
         </div>
 
@@ -780,9 +779,8 @@
         </div>
       </div>
 
-      <div class="modal-footer">
-        <button class="btn-action btn-wrong" onclick="window.game.resetAllGame()">Đặt lại toàn bộ điểm số</button>
-        <div style="display:flex; gap:10px;">
+      <div class="modal-footer settings-footer">
+        <div class="settings-footer-actions">
           <button class="btn-action btn-reveal" onclick="window.game.closeModals()">Đóng</button>
           <button class="btn-action btn-correct" onclick="window.game.saveSettings()">Lưu Cài Đặt</button>
         </div>
@@ -1366,7 +1364,7 @@
     Chế độ trình chiếu · <kbd>P</kbd> thoát · <kbd>?</kbd> phím tắt
   </div>
 
-  <div class="toast-notice" id="toast-notice" data-ui>Thông báo</div>
+  <div class="toast-notice" id="toast-notice" role="status" aria-live="polite" data-ui>Thông báo</div>
 
   <!-- VITE ENTRY POINT -->
   <script type="module" src="/src/main.js"></script>
